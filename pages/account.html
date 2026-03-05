@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SHIFT — My Account</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+[data-theme="dark"]{--bg:#0c0c0c;--bg2:#111;--surface:#161616;--card:#1a1a1a;--border:#252525;--border2:#333;--text:#f0ece6;--text2:#888;--text3:#444;--accent:#e8f55e;--accent-fg:#0c0c0c;--green:#4ade80;--red:#f87171;--blue:#60a5fa;--orange:#fb923c}
+[data-theme="light"]{--bg:#f7f6f3;--bg2:#edecea;--surface:#fff;--card:#fff;--border:#e2dfd8;--border2:#ccc;--text:#1a1a18;--text2:#6b6860;--text3:#bbb;--accent:#1a1a18;--accent-fg:#f7f6f3;--green:#16a34a;--red:#dc2626;--blue:#2563eb;--orange:#ea580c}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s}
+
+nav{position:sticky;top:0;z-index:100;padding:1.1rem 4%;display:flex;align-items:center;justify-content:space-between;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .3s}
+.nav-logo{font-size:1.2rem;font-weight:800;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:.4rem}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.nav-right{display:flex;align-items:center;gap:1rem}
+.theme-toggle{display:flex;align-items:center;background:var(--bg2);border-radius:100px;padding:3px;border:1px solid var(--border);cursor:pointer}
+.toggle-opt{width:25px;height:25px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;transition:background .2s;color:var(--text3)}
+.toggle-opt.active{background:var(--accent);color:var(--accent-fg)}
+.nav-btn{background:none;border:none;cursor:pointer;color:var(--text2);font-size:.8rem;font-family:'Syne',sans-serif;font-weight:600;transition:color .2s;text-decoration:none}
+.nav-btn:hover{color:var(--text)}
+
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 60px);max-width:1200px;margin:0 auto;padding:2rem 2rem 4rem;gap:2rem}
+@media(max-width:800px){.layout{grid-template-columns:1fr;padding:1.5rem 1.2rem 4rem}}
+
+/* SIDEBAR */
+.profile-sidebar{align-self:start;position:sticky;top:80px}
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;text-align:center;margin-bottom:1rem;transition:background .3s}
+.profile-avatar{width:72px;height:72px;border-radius:50%;background:var(--accent);color:var(--accent-fg);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;margin:0 auto 1rem;font-family:'Instrument Serif',serif}
+.profile-name{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.2rem}
+.profile-email{font-size:.72rem;color:var(--text2);font-family:'Geist Mono',monospace;margin-bottom.8rem}
+.profile-badge{display:inline-flex;align-items:center;gap:.3rem;font-size:.62rem;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);padding:.25rem .7rem;border-radius:100px;margin-top:.6rem;font-weight:600}
+[data-theme="light"] .profile-badge{color:var(--text);background:var(--bg2)}
+
+.sidebar-nav{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:background .3s}
+.snav-item{display:flex;align-items:center;gap:.8rem;padding:.85rem 1.2rem;cursor:pointer;font-size:.82rem;font-weight:500;color:var(--text2);border-bottom:1px solid var(--border);transition:all .2s;border-left:3px solid transparent}
+.snav-item:last-child{border-bottom:none}
+.snav-item:hover{background:var(--bg2);color:var(--text)}
+.snav-item.active{color:var(--text);border-left-color:var(--accent);background:color-mix(in srgb,var(--accent) 5%,transparent)}
+.snav-icon{font-size:1rem;width:20px;text-align:center}
+.snav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:.58rem;padding:.12rem .45rem;border-radius:100px}
+
+/* MAIN CONTENT */
+.account-main{}
+.page-section{display:none;animation:fadeIn .3s ease}
+.page-section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.section-title{font-family:'Instrument Serif',serif;font-size:1.6rem;color:var(--text);margin-bottom:1.5rem}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:1.2rem;transition:background .3s}
+.panel-head{padding:1.2rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-size:.85rem;font-weight:700;color:var(--text)}
+
+/* ORDERS */
+.order-card{border-bottom:1px solid var(--border);transition:background .2s}
+.order-card:last-child{border-bottom:none}
+.order-card-head{padding:1.2rem 1.4rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;cursor:pointer}
+.order-card-head:hover{background:var(--bg2)}
+.order-id{font-family:'Geist Mono',monospace;font-size:.72rem;color:var(--text2)}
+.order-name{font-size:.85rem;font-weight:600;color:var(--text);margin-top:.1rem}
+.order-date{font-size:.65rem;color:var(--text2);font-family:'Geist Mono',monospace}
+.order-amount{font-family:'Geist Mono',monospace;font-size:.9rem;font-weight:700;color:var(--text)}
+.status-pill{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .7rem;border-radius:100px;font-family:'Geist Mono',monospace;font-weight:500}
+.s-delivered{background:rgba(74,222,128,.1);color:var(--green)}
+.s-shipped{background:rgba(96,165,250,.1);color:var(--blue)}
+.s-processing{background:rgba(251,146,60,.1);color:var(--orange)}
+.s-cancelled{background:rgba(248,113,113,.1);color:var(--red)}
+.order-expand{padding:0 1.4rem;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+.order-expand.open{max-height:500px;padding:1rem 1.4rem 1.4rem}
+
+/* TRACKING TIMELINE */
+.track-timeline{position:relative;padding-left:1.5rem;margin:1rem 0}
+.track-timeline::before{content:'';position:absolute;left:.35rem;top:0;bottom:0;width:2px;background:var(--border)}
+.track-step{position:relative;margin-bottom:1.2rem}
+.track-step:last-child{margin-bottom:0}
+.track-dot{position:absolute;left:-1.25rem;top:.2rem;width:14px;height:14px;border-radius:50%;background:var(--border);border:2px solid var(--bg);transition:background .3s}
+.track-step.done .track-dot{background:var(--green)}
+.track-step.active .track-dot{background:var(--accent)}
+.track-title{font-size:.82rem;font-weight:600;color:var(--text2)}
+.track-step.done .track-title,.track-step.active .track-title{color:var(--text)}
+.track-time{font-size:.65rem;color:var(--text3);font-family:'Geist Mono',monospace;margin-top:.15rem}
+.track-step.done .track-time{color:var(--text2)}
+.order-items-mini{display:flex;gap:.6rem;margin-top:.8rem;flex-wrap:wrap}
+.oi-mini{background:var(--bg2);padding:.4rem .7rem;border-radius:8px;font-size:.72rem;color:var(--text2);display:flex;align-items:center;gap:.4rem}
+
+/* WISHLIST */
+.wishlist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem}
+.wl-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s}
+.wl-card:hover{border-color:var(--accent);transform:translateY(-3px)}
+.wl-img{aspect-ratio:1;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:2.8rem;position:relative}
+.wl-remove{position:absolute;top:.5rem;right:.5rem;width:28px;height:28px;border-radius:50%;background:rgba(10,10,10,.8);border:none;cursor:pointer;color:var(--text2);font-size:.8rem;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.wl-remove:hover{background:var(--red);color:#fff}
+.wl-body{padding:.8rem}
+.wl-name{font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:.3rem}
+.wl-price{font-family:'Geist Mono',monospace;font-size:.75rem;color:var(--text2);margin-bottom:.7rem}
+.wl-add{width:100%;padding:.5rem;background:var(--accent);color:var(--accent-fg);border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;border-radius:8px;transition:opacity .2s}
+.wl-add:hover{opacity:.85}
+
+/* ADDRESSES */
+.addr-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+@media(max-width:600px){.addr-grid{grid-template-columns:1fr}}
+.addr-card{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:1.4rem;position:relative;transition:border-color .2s}
+.addr-card.default{border-color:var(--accent)}
+.addr-default-tag{position:absolute;top:.8rem;right:.8rem;font-size:.58rem;background:var(--accent);color:var(--accent-fg);padding:.15rem .5rem;border-radius:100px;font-weight:700;text-transform:uppercase;letter-spacing:.1em}
+.addr-type{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text2);font-family:'Geist Mono',monospace;margin-bottom:.4rem}
+.addr-name{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:.4rem}
+.addr-line{font-size:.78rem;color:var(--text2);line-height:1.7}
+.addr-actions{display:flex;gap:.5rem;margin-top:.9rem}
+.addr-btn{font-size:.68rem;padding:.3rem .8rem;border-radius:100px;cursor:pointer;font-family:'Syne',sans-serif;font-weight:600;transition:all .2s}
+.addr-edit{background:none;border:1px solid var(--border);color:var(--text2)}
+.addr-edit:hover{border-color:var(--accent);color:var(--accent)}
+.addr-del{background:none;border:1px solid transparent;color:var(--red)}
+.addr-del:hover{border-color:var(--red)}
+
+/* PROFILE FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+.form-group{margin-bottom:.9rem}
+.form-group.full{grid-column:1/-1}
+.form-label{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text2);font-family:'Geist Mono',monospace;display:block;margin-bottom:.4rem}
+.form-input{width:100%;padding:.75rem 1rem;background:var(--bg2);border:1.5px solid var(--border);color:var(--text);border-radius:10px;font-family:'Syne',sans-serif;font-size:.85rem;outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--accent)}
+.form-input::placeholder{color:var(--text3)}
+.btn-save{padding:.8rem 2rem;background:var(--accent);color:var(--accent-fg);border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:.75rem;font-weight:700;border-radius:100px;transition:all .2s}
+.btn-save:hover{opacity:.85;transform:scale(1.03)}
+
+/* SECURITY PAGE */
+.security-item{display:flex;align-items:center;gap:1rem;padding:1.2rem 1.4rem;border-bottom:1px solid var(--border)}
+.security-item:last-child{border-bottom:none}
+.sec-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.sec-info{flex:1}
+.sec-title{font-size:.85rem;font-weight:600;color:var(--text)}
+.sec-sub{font-size:.72rem;color:var(--text2);margin-top:.15rem}
+.sec-status{font-size:.65rem;font-weight:600;margin-right:.5rem}
+.on{color:var(--green)}.off{color:var(--red)}
+.toggle-switch{position:relative;width:44px;height:24px;cursor:pointer}
+.toggle-switch input{display:none}
+.ts-track{position:absolute;inset:0;border-radius:100px;background:var(--border);transition:background .3s}
+.ts-thumb{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .3s}
+.toggle-switch input:checked~.ts-track{background:var(--accent)}
+[data-theme="light"] .toggle-switch input:checked~.ts-track{background:var(--text)}
+.toggle-switch input:checked~.ts-thumb{transform:translateX(20px)}
+
+/* TOAST */
+#toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(60px);background:var(--text);color:var(--bg);padding:.75rem 1.5rem;border-radius:100px;font-size:.78rem;font-weight:600;z-index:9999;opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;white-space:nowrap}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html"><span class="logo-dot"></span>SHIFT</a>
+  <div class="nav-right">
+    <div class="theme-toggle" id="themeToggle"><div class="toggle-opt active" id="darkOpt">🌙</div><div class="toggle-opt" id="lightOpt">☀️</div></div>
+    <a class="nav-btn" href="index.html">← Shop</a>
+    <a class="nav-btn" href="login.html" onclick="ShiftSecurity.clearSession()">Sign Out</a>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="profile-sidebar">
+    <div class="profile-card">
+      <div class="profile-avatar">A</div>
+      <div class="profile-name">Arjun Mehta</div>
+      <div class="profile-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="adccdfc7d8c3edc8c0ccc4c183cec2c0">[email&#160;protected]</a></div>
+      <div class="profile-badge">⭐ Gold Member</div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="snav-item active" onclick="showSection('orders',this)"><span class="snav-icon">📦</span>My Orders<span class="snav-badge">2</span></div>
+      <div class="snav-item" onclick="showSection('wishlist',this)"><span class="snav-icon">♡</span>Wishlist</div>
+      <div class="snav-item" onclick="showSection('addresses',this)"><span class="snav-icon">📍</span>Addresses</div>
+      <div class="snav-item" onclick="showSection('profile',this)"><span class="snav-icon">👤</span>Profile</div>
+      <div class="snav-item" onclick="showSection('security',this)"><span class="snav-icon">🔒</span>Security</div>
+      <div class="snav-item" onclick="window.location.href='login.html'"><span class="snav-icon">↩</span>Sign Out</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="account-main">
+
+    <!-- ORDERS -->
+    <div class="page-section active" id="section-orders">
+      <div class="section-title">My Orders</div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Order History</div><span style="font-size:.72rem;color:var(--text2);font-family:'Geist Mono',monospace">4 total orders</span></div>
+
+        <!-- ORDER 1 - Shipped -->
+        <div class="order-card">
+          <div class="order-card-head" onclick="toggleOrder('o1')">
+            <div><div class="order-id">#4821</div><div class="order-name">Minimal Trench Coat + 1 item</div><div class="order-date">Placed Mar 03, 2026</div></div>
+            <div style="display:flex;align-items:center;gap:1rem">
+              <span class="order-amount">₹13,798</span>
+              <span class="status-pill s-shipped">Shipped</span>
+              <span style="color:var(--text3);font-size:.8rem" id="o1-arrow">▼</span>
+            </div>
+          </div>
+          <div class="order-expand" id="o1">
+            <div class="order-items-mini">
+              <div class="oi-mini">🧥 Minimal Trench Coat · M · Charcoal</div>
+              <div class="oi-mini">🎧 Focus Headphones · Black</div>
+            </div>
+            <div class="track-timeline" style="margin-top:1.2rem">
+              <div class="track-step done"><div class="track-dot"></div><div class="track-title">Order Placed</div><div class="track-time">Mar 03 · 10:24 AM</div></div>
+              <div class="track-step done"><div class="track-dot"></div><div class="track-title">Payment Confirmed</div><div class="track-time">Mar 03 · 10:26 AM</div></div>
+              <div class="track-step done"><div class="track-dot"></div><div class="track-title">Packed & Ready</div><div class="track-time">Mar 04 · 9:00 AM</div></div>
+              <div class="track-step active"><div class="track-dot"></div><div class="track-title">In Transit — Delhi Hub</div><div class="track-time">Mar 05 · 6:30 AM · ETA: Mar 07</div></div>
+              <div class="track-step"><div class="track-dot"></div><div class="track-title">Out for Delivery</div><div class="track-time">Expected Mar 07</div></div>
+              <div class="track-step"><div class="track-dot"></div><div class="track-title">Delivered</div><div class="track-time">—</div></div>
+            </div>
+            <div style="display:flex;gap:.6rem;margin-top:1.2rem">
+              <button style="padding:.5rem 1.2rem;border:1px solid var(--border);border-radius:100px;background:none;color:var(--text2);cursor:pointer;font-size:.72rem;font-family:'Syne',sans-serif;font-weight:600;transition:all .2s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'" onclick="showToast('Tracking page opening...')">Track Order</button>
+              <button style="padding:.5rem 1.2rem;border:1px solid var(--border);border-radius:100px;background:none;color:var(--text2);cursor:pointer;font-size:.72rem;font-family:'Syne',sans-serif;font-weight:600;transition:all .2s" onclick="showToast('Invoice downloaded!')" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">Download Invoice</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ORDER 2 - Delivered -->
+        <div class="order-card">
+          <div class="order-card-head" onclick="toggleOrder('o2')">
+            <div><div class="order-id">#4799</div><div class="order-name">Glass Skin Serum · 2× units</div><div class="order-date">Placed Feb 18, 2026</div></div>
+            <div style="display:flex;align-items:center;gap:1rem">
+              <span class="order-amount">₹3,798</span>
+              <span class="status-pill s-delivered">Delivered</span>
+              <span style="color:var(--text3);font-size:.8rem" id="o2-arrow">▼</span>
+            </div>
+          </div>
+          <div class="order-expand" id="o2">
+            <div class="order-items-mini"><div class="oi-mini">🧴 Glass Skin Serum × 2</div></div>
+            <div class="track-timeline" style="margin-top:1.2rem">
+              <div class="track-step done"><div class="track-dot"></div><div class="track-title">Order Placed</div><div class="track-time">Feb 18</div></div>
+              <div class="track-step done"><div class="track-dot"></div><div class="track-title">Packed & Shipped</div><div class="track-time">Feb 19</div></div>
+              <div class="track-step done"><div class="track-dot"></div><div class="track-title">Delivered ✓</div><div class="track-time">Feb 22 · Left with neighbour</div></div>
+            </div>
+            <div style="display:flex;gap:.6rem;margin-top:1.2rem">
+              <button style="padding:.5rem 1.2rem;border:1px solid var(--border);border-radius:100px;background:var(--accent);color:var(--accent-fg);cursor:pointer;font-size:.72rem;font-family:'Syne',sans-serif;font-weight:700" onclick="showToast('Review form opening...')">Write Review</button>
+              <button style="padding:.5rem 1.2rem;border:1px solid var(--border);border-radius:100px;background:none;color:var(--text2);cursor:pointer;font-size:.72rem;font-family:'Syne',sans-serif;font-weight:600" onclick="showToast('Return request submitted!')">Return Item</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WISHLIST -->
+    <div class="page-section" id="section-wishlist">
+      <div class="section-title">My Wishlist</div>
+      <div class="wishlist-grid" id="wishlistGrid">
+        <div class="wl-card"><div class="wl-img">🧥<button class="wl-remove" onclick="removeWish(this)">✕</button></div><div class="wl-body"><div class="wl-name">Minimal Trench Coat</div><div class="wl-price">₹8,499</div><button class="wl-add" onclick="showToast('Added to cart!')">Add to Cart</button></div></div>
+        <div class="wl-card"><div class="wl-img">⌚<button class="wl-remove" onclick="removeWish(this)">✕</button></div><div class="wl-body"><div class="wl-name">Matte Watch</div><div class="wl-price">₹9,999</div><button class="wl-add" onclick="showToast('Added to cart!')">Add to Cart</button></div></div>
+        <div class="wl-card"><div class="wl-img">🕯<button class="wl-remove" onclick="removeWish(this)">✕</button></div><div class="wl-body"><div class="wl-name">Linen Table Lamp</div><div class="wl-price">₹2,199</div><button class="wl-add" onclick="showToast('Added to cart!')">Add to Cart</button></div></div>
+        <div class="wl-card"><div class="wl-img">🧣<button class="wl-remove" onclick="removeWish(this)">✕</button></div><div class="wl-body"><div class="wl-name">Merino Scarf</div><div class="wl-price">₹2,299</div><button class="wl-add" onclick="showToast('Added to cart!')">Add to Cart</button></div></div>
+      </div>
+    </div>
+
+    <!-- ADDRESSES -->
+    <div class="page-section" id="section-addresses">
+      <div class="section-title">Saved Addresses</div>
+      <div class="addr-grid">
+        <div class="addr-card default">
+          <span class="addr-default-tag">Default</span>
+          <div class="addr-type">🏠 Home</div>
+          <div class="addr-name">Arjun Mehta</div>
+          <div class="addr-line">Flat 4B, Sunrise Apartments<br/>MG Road, Near HDFC Bank<br/>Mumbai, Maharashtra 400001<br/>+91 98765 43210</div>
+          <div class="addr-actions"><button class="addr-btn addr-edit" onclick="showToast('Edit address form opening...')">Edit</button><button class="addr-btn addr-del" onclick="showToast('Address deleted')">Delete</button></div>
+        </div>
+        <div class="addr-card">
+          <div class="addr-type">🏢 Office</div>
+          <div class="addr-name">Arjun Mehta</div>
+          <div class="addr-line">Level 8, Tower B<br/>Cyber City, DLF Phase 2<br/>Gurugram, Haryana 122002<br/>+91 98765 43210</div>
+          <div class="addr-actions"><button class="addr-btn addr-edit" onclick="showToast('Edit address form opening...')">Edit</button><button class="addr-btn addr-del" onclick="showToast('Address deleted')">Delete</button><button class="addr-btn addr-edit" onclick="showToast('Set as default!')">Set Default</button></div>
+        </div>
+      </div>
+      <button style="padding:.75rem 1.5rem;background:none;border:1.5px dashed var(--border2);color:var(--text2);border-radius:12px;cursor:pointer;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;transition:all .2s;width:100%" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text2)'" onclick="showToast('Add address form opening...')">+ Add New Address</button>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="page-section" id="section-profile">
+      <div class="section-title">Profile Settings</div>
+      <div class="panel" style="padding:1.5rem">
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">First Name</label><input class="form-input" value="Arjun" type="text"/></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" value="Mehta" type="text"/></div>
+          <div class="form-group full"><label class="form-label">Email Address</label><input class="form-input" value="arjun@email.com" type="email"/></div>
+          <div class="form-group"><label class="form-label">Phone</label><input class="form-input" value="+91 98765 43210" type="tel"/></div>
+          <div class="form-group"><label class="form-label">Date of Birth</label><input class="form-input" value="1995-06-15" type="date"/></div>
+          <div class="form-group full"><label class="form-label">Gender</label>
+            <select class="form-input"><option>Male</option><option>Female</option><option>Prefer not to say</option></select>
+          </div>
+        </div>
+        <button class="btn-save" onclick="showToast('✓ Profile updated successfully!')">Save Changes</button>
+      </div>
+
+      <div class="panel" style="padding:1.5rem;margin-top:1rem">
+        <div style="font-size:.85rem;font-weight:700;color:var(--text);margin-bottom:1.2rem">Notification Preferences</div>
+        <div style="display:flex;flex-direction:column;gap:.9rem">
+          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+            <div><div style="font-size:.82rem;font-weight:500;color:var(--text)">Order Updates</div><div style="font-size:.68rem;color:var(--text2)">Shipping, delivery, returns</div></div>
+            <label class="toggle-switch"><input type="checkbox" checked/><div class="ts-track"></div><div class="ts-thumb"></div></label>
+          </label>
+          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+            <div><div style="font-size:.82rem;font-weight:500;color:var(--text)">Promotions & Offers</div><div style="font-size:.68rem;color:var(--text2)">Deals, discounts, flash sales</div></div>
+            <label class="toggle-switch"><input type="checkbox" checked/><div class="ts-track"></div><div class="ts-thumb"></div></label>
+          </label>
+          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+            <div><div style="font-size:.82rem;font-weight:500;color:var(--text)">New Arrivals</div><div style="font-size:.68rem;color:var(--text2)">Weekly new product drops</div></div>
+            <label class="toggle-switch"><input type="checkbox"/><div class="ts-track"></div><div class="ts-thumb"></div></label>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECURITY -->
+    <div class="page-section" id="section-security">
+      <div class="section-title">Security Settings</div>
+      <div class="panel">
+        <div class="security-item">
+          <div class="sec-icon" style="background:rgba(74,222,128,.1)">🔑</div>
+          <div class="sec-info"><div class="sec-title">Password</div><div class="sec-sub">Last changed 30 days ago</div></div>
+          <button style="padding:.5rem 1.2rem;border:1px solid var(--border);border-radius:100px;background:none;color:var(--text2);cursor:pointer;font-size:.72rem;font-family:'Syne',sans-serif;font-weight:600;transition:all .2s" onclick="showToast('Password change form opening...')">Change</button>
+        </div>
+        <div class="security-item">
+          <div class="sec-icon" style="background:rgba(96,165,250,.1)">📱</div>
+          <div class="sec-info"><div class="sec-title">Two-Factor Authentication (OTP)</div><div class="sec-sub">SMS OTP on every login</div></div>
+          <span class="sec-status on">ON</span>
+          <label class="toggle-switch"><input type="checkbox" checked onchange="showToast('2FA setting updated')"/><div class="ts-track"></div><div class="ts-thumb"></div></label>
+        </div>
+        <div class="security-item">
+          <div class="sec-icon" style="background:rgba(251,146,60,.1)">🔔</div>
+          <div class="sec-info"><div class="sec-title">Login Alerts</div><div class="sec-sub">Email me on new device login</div></div>
+          <span class="sec-status on">ON</span>
+          <label class="toggle-switch"><input type="checkbox" checked onchange="showToast('Alert setting updated')"/><div class="ts-track"></div><div class="ts-thumb"></div></label>
+        </div>
+        <div class="security-item">
+          <div class="sec-icon" style="background:rgba(232,245,94,.1)">🖥</div>
+          <div class="sec-info"><div class="sec-title">Active Sessions</div><div class="sec-sub">Chrome · Mumbai · Just now</div></div>
+          <button style="padding:.5rem 1.2rem;border:1px solid rgba(248,113,113,.3);border-radius:100px;background:none;color:var(--red);cursor:pointer;font-size:.72rem;font-family:'Syne',sans-serif;font-weight:600" onclick="showToast('All other sessions terminated')">Sign Out All</button>
+        </div>
+        <div class="security-item">
+          <div class="sec-icon" style="background:rgba(248,113,113,.1)">🗑</div>
+          <div class="sec-info"><div class="sec-title">Delete Account</div><div class="sec-sub">Permanently delete all your data</div></div>
+          <button style="padding:.5rem 1.2rem;border:1px solid rgba(248,113,113,.3);border-radius:100px;background:none;color:var(--red);cursor:pointer;font-size:.72rem;font-family:'Syne',sans-serif;font-weight:600" onclick="if(confirm('Are you sure? This cannot be undone.'))showToast('Account deletion requested')">Delete</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const ShiftSecurity=(()=>{function generateCSRF(){const a=new Uint8Array(32);crypto.getRandomValues(a);return Array.from(a).map(b=>b.toString(16).padStart(2,"0")).join("")}function getCSRFToken(){let t=sessionStorage.getItem("csrf_token");if(!t){t=generateCSRF();sessionStorage.setItem("csrf_token",t)}return t}function injectCSRF(){document.querySelectorAll("form").forEach(f=>{if(!f.querySelector("[name=_csrf]")){const i=document.createElement("input");i.type="hidden";i.name="_csrf";i.value=getCSRFToken();f.appendChild(i)}})}function sanitize(s){if(typeof s!=="string")return"";return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#x27;").trim().slice(0,2000)}const _rl={};function rateLimit(k,max,win){const now=Date.now();if(!_rl[k])_rl[k]={count:0,start:now};const r=_rl[k];if(now-r.start>win){r.count=0;r.start=now}r.count++;return r.count<=max}function getRemainingAttempts(k,max){return Math.max(0,max-(_rl[k]?.count||0))}function recordFailedLogin(id){const k="fail_"+id;const d=JSON.parse(sessionStorage.getItem(k)||"{"count":0,"until":0}");d.count++;if(d.count>=5)d.until=Date.now()+15*60*1000;sessionStorage.setItem(k,JSON.stringify(d));return d}function isLockedOut(id){const d=JSON.parse(sessionStorage.getItem("fail_"+id)||"{"count":0,"until":0}");return d.until>Date.now()}function getLockoutRemaining(id){const d=JSON.parse(sessionStorage.getItem("fail_"+id)||"{"count":0,"until":0}");return Math.max(0,Math.ceil((d.until-Date.now())/1000))}function clearFailedLogins(id){sessionStorage.removeItem("fail_"+id)}const SK="shift_session",SD=30*60*1000;function createSession(u){const s={user:u,token:generateCSRF(),created:Date.now(),expires:Date.now()+SD,role:u.role||"customer"};sessionStorage.setItem(SK,JSON.stringify(s));return s}function getSession(){try{const s=JSON.parse(sessionStorage.getItem(SK));if(!s||Date.now()>s.expires){clearSession();return null}s.expires=Date.now()+SD;sessionStorage.setItem(SK,JSON.stringify(s));return s}catch{return null}}function clearSession(){sessionStorage.removeItem(SK)}function requireAuth(role){const s=getSession();if(!s){window.location.href="login.html";return false}if(role&&s.role!==role){window.location.href="index.html";return false}return s}function requireAdmin(){return requireAuth("admin")}function generateOTP(){return Math.floor(100000+Math.random()*900000).toString()}async function storeOTP(otp){const enc=new TextEncoder();const hash=await crypto.subtle.digest("SHA-256",enc.encode(otp+"shift_salt"));const hex=Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,"0")).join("");sessionStorage.setItem("pending_otp",JSON.stringify({hash:hex,exp:Date.now()+5*60*1000}));return otp}async function verifyOTP(input){const stored=JSON.parse(sessionStorage.getItem("pending_otp")||"null");if(!stored||Date.now()>stored.exp)return false;const enc=new TextEncoder();const hash=await crypto.subtle.digest("SHA-256",enc.encode(input+"shift_salt"));const hex=Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,"0")).join("");if(hex===stored.hash){sessionStorage.removeItem("pending_otp");return true}return false}const validators={email:v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),phone:v=>/^[\+]?[0-9]{10,13}$/.test(v.replace(/\s/g,"")),pin:v=>/^[0-9]{6}$/.test(v),name:v=>v.trim().length>=2&&v.trim().length<=80,password:v=>v.length>=8&&/[A-Z]/.test(v)&&/[0-9]/.test(v)&&/[^A-Za-z0-9]/.test(v),cardNum:v=>{const n=v.replace(/\s/g,"");if(!/^\d{13,19}$/.test(n))return false;let s=0,alt=false;for(let i=n.length-1;i>=0;i--){let d=+n[i];if(alt){d*=2;if(d>9)d-=9}s+=d;alt=!alt}return s%10===0},cvv:v=>/^\d{3,4}$/.test(v),expiry:v=>{const m=v.replace(/\s/g,"").match(/^(\d{2})[\/\-](\d{2,4})$/);if(!m)return false;const mo=parseInt(m[1]),yr=parseInt(m[2].length===2?"20"+m[2]:m[2]),now=new Date();return mo>=1&&mo<=12&&(yr>now.getFullYear()||(yr===now.getFullYear()&&mo>=now.getMonth()+1))}};const _log=JSON.parse(sessionStorage.getItem("audit_log")||"[]");function auditLog(action,details={}){_log.push({action,details,time:new Date().toISOString(),page:location.pathname});if(_log.length>200)_log.shift();sessionStorage.setItem("audit_log",JSON.stringify(_log))}function getAuditLog(){return[..._log]}function initTheme(dId="darkOpt",lId="lightOpt",tId="themeToggle"){const html=document.documentElement;const dOpt=document.getElementById(dId);const lOpt=document.getElementById(lId);function setTheme(t){html.setAttribute("data-theme",t);if(dOpt)dOpt.classList.toggle("active",t==="dark");if(lOpt)lOpt.classList.toggle("active",t==="light");localStorage.setItem("shift_theme",t)}const saved=localStorage.getItem("shift_theme");if(saved)setTheme(saved);document.getElementById(tId)?.addEventListener("click",()=>setTheme(html.getAttribute("data-theme")==="dark"?"light":"dark"));return setTheme}document.addEventListener("DOMContentLoaded",injectCSRF);return{getCSRFToken,sanitize,rateLimit,getRemainingAttempts,recordFailedLogin,isLockedOut,getLockoutRemaining,clearFailedLogins,createSession,getSession,clearSession,requireAuth,requireAdmin,generateOTP,storeOTP,verifyOTP,validators,auditLog,getAuditLog,initTheme};})();
+</script>
+<script>
+ShiftSecurity.initTheme();
+
+function showSection(id,el){
+  document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.snav-item').forEach(s=>s.classList.remove('active'));
+  document.getElementById('section-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleOrder(id){
+  const el=document.getElementById(id);
+  const arr=document.getElementById(id+'-arrow');
+  el.classList.toggle('open');
+  if(arr)arr.textContent=el.classList.contains('open')?'▲':'▼';
+}
+function removeWish(btn){
+  btn.closest('.wl-card').style.transition='all .3s';
+  btn.closest('.wl-card').style.opacity='0';
+  btn.closest('.wl-card').style.transform='scale(.9)';
+  setTimeout(()=>btn.closest('.wl-card').remove(),300);
+  showToast('Removed from wishlist');
+}
+let 

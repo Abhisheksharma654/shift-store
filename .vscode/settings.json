@@ -1,0 +1,17 @@
+{
+  "liveServer.settings.port": 5500,
+  "liveServer.settings.donotShowInfoMsg": true,
+  "liveServer.settings.donotVerifyTags": true,
+  "liveServer.settings.root": "/",
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.wordWrap": "on",
+  "emmet.includeLanguages": {
+    "html": "html"
+  },
+  "files.associations": {
+    "*.html": "html"
+  },
+  "html.format.wrapLineLength": 120,
+  "editor.defaultFormatter": "vscode.html-language-features"
+}

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SHIFT — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+[data-theme="dark"]{
+  --bg:#0c0c0c; --bg2:#111; --surface:#161616; --card:#1a1a1a;
+  --border:#252525; --border2:#333;
+  --text:#f0ece6; --text2:#888; --text3:#444;
+  --accent:#e8f55e; --accent-fg:#0c0c0c;
+  --green:#4ade80; --red:#f87171; --orange:#fb923c; --blue:#60a5fa;
+  --sidebar-w:240px; --shadow:rgba(0,0,0,.5);
+}
+[data-theme="light"]{
+  --bg:#f7f6f3; --bg2:#eeede9; --surface:#ffffff; --card:#ffffff;
+  --border:#e2dfd8; --border2:#ccc;
+  --text:#1a1a18; --text2:#6b6860; --text3:#bbb;
+  --accent:#1a1a18; --accent-fg:#f7f6f3;
+  --green:#16a34a; --red:#dc2626; --orange:#ea580c; --blue:#2563eb;
+  --sidebar-w:240px; --shadow:rgba(0,0,0,.07);
+}
+
+html,body{height:100%}
+body{
+  font-family:'Syne',sans-serif;
+  background:var(--bg); color:var(--text);
+  display:flex; overflow:hidden;
+  transition:background .3s,color .3s;
+}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar-w); height:100vh;
+  background:var(--surface); border-right:1px solid var(--border);
+  display:flex; flex-direction:column;
+  transition:background .3s,border-color .3s;
+  flex-shrink:0; overflow-y:auto;
+}
+.sidebar-brand{
+  padding:1.6rem 1.4rem 1rem;
+  display:flex; align-items:center; gap:.6rem;
+  border-bottom:1px solid var(--border);
+}
+.brand-dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.brand-name{font-size:1.1rem;font-weight:800;color:var(--text)}
+.brand-tag{font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text2);font-family:'Geist Mono',monospace}
+
+.sidebar-section{padding:.8rem 1rem .4rem; font-size:.6rem; letter-spacing:.2em; text-transform:uppercase; color:var(--text3); font-family:'Geist Mono',monospace}
+
+.nav-item{
+  display:flex; align-items:center; gap:.8rem;
+  padding:.7rem 1.2rem; margin:.1rem .6rem;
+  border-radius:10px; cursor:pointer; font-size:.82rem; font-weight:500;
+  color:var(--text2); transition:all .2s; text-decoration:none;
+  border:1px solid transparent;
+}
+.nav-item:hover{background:var(--bg2);color:var(--text)}
+.nav-item.active{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.nav-item .ni-icon{font-size:1rem;width:20px;text-align:center;flex-shrink:0}
+.nav-badge{
+  margin-left:auto; background:var(--red); color:#fff;
+  font-size:.58rem; padding:.15rem .45rem; border-radius:100px; font-family:'Geist Mono',monospace;
+}
+.nav-item.active .nav-badge{background:var(--accent-fg);color:var(--accent)}
+
+.sidebar-footer{margin-top:auto;padding:1rem;border-top:1px solid var(--border)}
+.admin-profile{
+  display:flex; align-items:center; gap:.8rem;
+  padding:.7rem .8rem; border-radius:10px;
+  cursor:pointer; transition:background .2s;
+}
+.admin-profile:hover{background:var(--bg2)}
+.avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--accent);color:var(--accent-fg);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;font-weight:700;flex-shrink:0;
+}
+.admin-name{font-size:.8rem;font-weight:600;color:var(--text)}
+.admin-role{font-size:.65rem;color:var(--text2)}
+
+/* ── MAIN ── */
+.main{flex:1;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+
+/* ── TOPBAR ── */
+.topbar{
+  padding:1rem 2rem; display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid var(--border); background:var(--surface);
+  position:sticky; top:0; z-index:10; transition:background .3s;
+  flex-shrink:0;
+}
+.page-title{font-size:1rem;font-weight:700;color:var(--text)}
+.page-sub{font-size:.72rem;color:var(--text2);margin-top:.1rem;font-family:'Geist Mono',monospace}
+.topbar-right{display:flex;align-items:center;gap:1rem}
+
+.theme-toggle{
+  display:flex;align-items:center;
+  background:var(--bg2);border-radius:100px;
+  padding:3px;border:1px solid var(--border);cursor:pointer;
+}
+.toggle-opt{
+  width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.72rem;transition:background .2s,color .2s;color:var(--text3);
+}
+.toggle-opt.active{background:var(--accent);color:var(--accent-fg)}
+
+.topbar-btn{
+  padding:.5rem 1.2rem;border-radius:100px;
+  background:var(--accent);color:var(--accent-fg);
+  border:none;cursor:pointer;font-family:'Syne',sans-serif;
+  font-size:.72rem;letter-spacing:.08em;font-weight:600;
+  transition:opacity .2s,transform .2s;
+}
+.topbar-btn:hover{opacity:.85;transform:scale(1.03)}
+
+.notif-btn{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--card);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:.9rem;position:relative;transition:border-color .2s;
+}
+.notif-btn:hover{border-color:var(--accent)}
+.notif-pip{
+  position:absolute;top:4px;right:4px;
+  width:7px;height:7px;border-radius:50%;
+  background:var(--red);border:2px solid var(--surface);
+}
+
+/* ── CONTENT ── */
+.content{padding:1.8rem 2rem;flex:1}
+
+/* ── STATS ROW ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-bottom:2rem}
+.stat-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:1.4rem;
+  transition:border-color .2s,transform .2s,background .3s;
+  cursor:default;
+}
+.stat-card:hover{border-color:var(--accent);transform:translateY(-3px)}
+.stat-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
+.stat-icon{
+  width:40px;height:40px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;
+}
+.stat-change{
+  font-size:.65rem;font-family:'Geist Mono',monospace;
+  padding:.2rem .5rem;border-radius:100px;font-weight:500;
+}
+.up{background:rgba(74,222,128,.12);color:var(--green)}
+.down{background:rgba(248,113,113,.12);color:var(--red)}
+.stat-num{
+  font-family:'Instrument Serif',serif;
+  font-size:2rem;font-weight:400;color:var(--text);line-height:1;margin-bottom:.3rem;
+}
+.stat-label{font-size:.72rem;color:var(--text2);letter-spacing:.05em}
+
+/* ── GRID 2-COL ── */
+.grid-2{display:grid;grid-template-columns:1.6fr 1fr;gap:1.2rem;margin-bottom:1.2rem}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem;margin-bottom:1.2rem}
+
+/* ── PANEL ── */
+.panel{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;transition:background .3s,border-color .3s;
+}
+.panel-head{
+  padding:1.2rem 1.4rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.panel-title{font-size:.85rem;font-weight:700;color:var(--text)}
+.panel-sub{font-size:.68rem;color:var(--text2);font-family:'Geist Mono',monospace;margin-top:.15rem}
+.panel-action{
+  font-size:.68rem;color:var(--text2);cursor:pointer;
+  padding:.3rem .8rem;border-radius:100px;border:1px solid var(--border);
+  transition:all .2s;background:none;font-family:'Syne',sans-serif;
+}
+.panel-action:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ── ORDERS TABLE ── */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+th{
+  padding:.8rem 1rem;text-align:left;
+  font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--text2);font-weight:500;border-bottom:1px solid var(--border);
+  font-family:'Geist Mono',monospace;
+}
+td{padding:.85rem 1rem;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg2)}
+
+.order-id{font-family:'Geist Mono',monospace;font-size:.72rem;color:var(--text2)}
+.cust-cell{display:flex;align-items:center;gap:.6rem}
+.cust-avatar{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:.8rem;
+}
+.cust-name{font-weight:500;font-size:.8rem}
+.cust-city{font-size:.65rem;color:var(--text2)}
+
+.status-badge{
+  display:inline-flex;align-items:center;gap:.3rem;
+  font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.25rem .7rem;border-radius:100px;font-family:'Geist Mono',monospace;font-weight:500;
+}
+.s-paid{background:rgba(74,222,128,.1);color:var(--green)}
+.s-pending{background:rgba(251,146,60,.1);color:var(--orange)}
+.s-shipped{background:rgba(96,165,250,.1);color:var(--blue)}
+.s-cancelled{background:rgba(248,113,113,.1);color:var(--red)}
+
+.action-btn{
+  background:none;border:1px solid var(--border);color:var(--text2);
+  padding:.3rem .7rem;border-radius:8px;cursor:pointer;font-size:.68rem;
+  font-family:'Syne',sans-serif;transition:all .2s;
+}
+.action-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ── CHART BARS ── */
+.chart-area{padding:1.4rem}
+.chart-bars{display:flex;align-items:flex-end;gap:.5rem;height:120px;margin-bottom:.8rem}
+.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:.3rem;height:100%}
+.bar{
+  width:100%;border-radius:6px 6px 0 0;
+  background:var(--accent);opacity:.7;
+  transition:opacity .2s,height .6s cubic-bezier(.34,1.56,.64,1);
+  cursor:pointer;
+}
+.bar:hover{opacity:1}
+.bar-label{font-size:.58rem;color:var(--text2);font-family:'Geist Mono',monospace}
+.chart-legend{display:flex;gap:1.2rem;padding:.6rem 0 0}
+.leg-item{display:flex;align-items:center;gap:.4rem;font-size:.68rem;color:var(--text2)}
+.leg-dot{width:7px;height:7px;border-radius:50%}
+
+/* ── TOP PRODUCTS ── */
+.prod-row{
+  display:flex;align-items:center;gap:.8rem;
+  padding:.9rem 1.4rem;border-bottom:1px solid var(--border);
+  transition:background .15s;cursor:default;
+}
+.prod-row:last-child{border-bottom:none}
+.prod-row:hover{background:var(--bg2)}
+.prod-rank{
+  font-family:'Geist Mono',monospace;font-size:.7rem;
+  color:var(--text3);width:18px;flex-shrink:0;text-align:center;
+}
+.prod-emoji-box{
+  width:36px;height:36px;border-radius:9px;
+  background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+}
+.prod-info{flex:1}
+.prod-title{font-size:.8rem;font-weight:600;color:var(--text)}
+.prod-sales{font-size:.65rem;color:var(--text2);font-family:'Geist Mono',monospace}
+.prod-rev{font-size:.8rem;font-weight:600;color:var(--text);font-family:'Geist Mono',monospace;margin-left:auto}
+
+/* ── ACTIVITY FEED ── */
+.activity-item{
+  display:flex;align-items:flex-start;gap:.9rem;
+  padding:.9rem 1.4rem;border-bottom:1px solid var(--border);
+}
+.activity-item:last-child{border-bottom:none}
+.act-icon{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;
+}
+.act-text{font-size:.78rem;color:var(--text);line-height:1.5}
+.act-text strong{font-weight:600}
+.act-time{font-size:.62rem;color:var(--text2);font-family:'Geist Mono',monospace;margin-top:.2rem}
+
+/* ── MINI STATS ── */
+.mini-stat{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:1.4rem;text-align:center;
+  transition:background .3s,border-color .3s;
+}
+.mini-stat-emoji{font-size:1.5rem;margin-bottom:.6rem;display:block}
+.mini-stat-num{font-family:'Instrument Serif',serif;font-size:1.6rem;color:var(--text);display:block;line-height:1}
+.mini-stat-label{font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin-top:.3rem;display:block}
+
+/* ── INVENTORY ── */
+.inv-bar-wrap{padding:.3rem 0}
+.inv-bar-bg{height:4px;background:var(--border);border-radius:100px;overflow:hidden}
+.inv-bar-fill{height:100%;border-radius:100px;transition:width .8s cubic-bezier(.34,1.56,.64,1)}
+
+/* ── ADD PRODUCT MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:20px;padding:2rem;width:min(520px,90vw);
+  transform:scale(.95) translateY(20px);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+}
+.modal-overlay.open .modal{transform:none}
+.modal-title{
+  font-family:'Instrument Serif',serif;font-size:1.5rem;
+  color:var(--text);margin-bottom:1.5rem;
+}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.form-group{display:flex;flex-direction:column;gap:.4rem}
+.form-group.full{grid-column:1/-1}
+.form-label{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text2);font-family:'Geist Mono',monospace}
+.form-input{
+  padding:.7rem .9rem;background:var(--bg2);border:1px solid var(--border);
+  color:var(--text);border-radius:8px;font-family:'Syne',sans-serif;font-size:.82rem;
+  outline:none;transition:border-color .2s;
+}
+.form-input:focus{border-color:var(--accent)}
+.form-input::placeholder{color:var(--text3)}
+select.form-input{cursor:pointer}
+.modal-actions{display:flex;gap:.8rem;justify-content:flex-end;margin-top:1.5rem}
+.btn-cancel{
+  padding:.7rem 1.4rem;border-radius:100px;background:none;
+  border:1px solid var(--border);color:var(--text2);cursor:pointer;
+  font-family:'Syne',sans-serif;font-size:.75rem;transition:all .2s;
+}
+.btn-cancel:hover{border-color:var(--text);color:var(--text)}
+.btn-save{
+  padding:.7rem 1.6rem;border-radius:100px;
+  background:var(--accent);color:var(--accent-fg);
+  border:none;cursor:pointer;font-family:'Syne',sans-serif;
+  font-size:.75rem;font-weight:700;transition:opacity .2s,transform .2s;
+}
+.btn-save:hover{opacity:.85;transform:scale(1.03)}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:2rem;right:2rem;
+  background:var(--text);color:var(--bg);
+  padding:.75rem 1.4rem;border-radius:100px;
+  font-size:.78rem;font-weight:600;z-index:9999;
+  transform:translateY(60px);opacity:0;
+  transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;
+}
+#toast.show{transform:none;opacity:1}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .grid-2{grid-template-columns:1fr}
+  .grid-3{grid-template-columns:1fr 1fr}
+}
+@media(max-width:700px){
+  .sidebar{display:none}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .grid-3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-dot"></div>
+    <div>
+      <div class="brand-name">SHIFT</div>
+      <div class="brand-tag">Admin Panel</div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">Main</div>
+  <a class="nav-item active" href="#"><span class="ni-icon">⊞</span> Dashboard</a>
+  <a class="nav-item" href="#" onclick="showToast('Orders page coming soon')"><span class="ni-icon">📦</span> Orders <span class="nav-badge">12</span></a>
+  <a class="nav-item" href="#" onclick="showToast('Products page coming soon')"><span class="ni-icon">🏷</span> Products</a>
+  <a class="nav-item" href="#" onclick="showToast('Customers page coming soon')"><span class="ni-icon">👥</span> Customers</a>
+
+  <div class="sidebar-section">Store</div>
+  <a class="nav-item" href="#" onclick="showToast('Analytics page coming soon')"><span class="ni-icon">📈</span> Analytics</a>
+  <a class="nav-item" href="#" onclick="showToast('Inventory page coming soon')"><span class="ni-icon">🗄</span> Inventory</a>
+  <a class="nav-item" href="payment.html"><span class="ni-icon">💳</span> Payments</a>
+  <a class="nav-item" href="#" onclick="showToast('Discounts page coming soon')"><span class="ni-icon">🎟</span> Discounts</a>
+
+  <div class="sidebar-section">System</div>
+  <a class="nav-item" href="#" onclick="showToast('Settings page coming soon')"><span class="ni-icon">⚙</span> Settings</a>
+  <a class="nav-item" href="index.html">↗ View Store</a>
+
+  <div class="sidebar-footer">
+    <div class="admin-profile">
+      <div class="avatar">AD</div>
+      <div>
+        <div class="admin-name">Admin User</div>
+        <div class="admin-role">Super Admin</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div>
+      <div class="page-title">Dashboard</div>
+      <div class="page-sub">Thursday, March 05 · 2026</div>
+    </div>
+    <div class="topbar-right">
+      <div class="theme-toggle" id="themeToggle">
+        <div class="toggle-opt active" id="darkOpt">🌙</div>
+        <div class="toggle-opt" id="lightOpt">☀️</div>
+      </div>
+      <div class="notif-btn"><div class="notif-pip"></div>🔔</div>
+      <button class="topbar-btn" onclick="openModal()">+ Add Product</button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon" style="background:rgba(232,245,94,.1)">💰</div>
+          <span class="stat-change up">↑ 18.2%</span>
+        </div>
+        <div class="stat-num">₹2.4L</div>
+        <div class="stat-label">Total Revenue · This Month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon" style="background:rgba(96,165,250,.1)">📦</div>
+          <span class="stat-change up">↑ 9.4%</span>
+        </div>
+        <div class="stat-num">347</div>
+        <div class="stat-label">Orders · This Month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon" style="background:rgba(74,222,128,.1)">👥</div>
+          <span class="stat-change up">↑ 5.1%</span>
+        </div>
+        <div class="stat-num">1,284</div>
+        <div class="stat-label">Active Customers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon" style="background:rgba(251,146,60,.1)">🛒</div>
+          <span class="stat-change down">↓ 2.3%</span>
+        </div>
+        <div class="stat-num">68.4%</div>
+        <div class="stat-label">Cart Conversion Rate</div>
+      </div>
+    </div>
+
+    <!-- CHART + ACTIVITY -->
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Revenue Overview</div>
+            <div class="panel-sub">Last 7 days · INR</div>
+          </div>
+          <button class="panel-action">Export</button>
+        </div>
+        <div class="chart-area">
+          <div class="chart-bars" id="chartBars"></div>
+          <div class="chart-legend">
+            <div class="leg-item"><div class="leg-dot" style="background:var(--accent)"></div>Revenue</div>
+            <div class="leg-item"><div class="leg-dot" style="background:var(--blue)"></div>Orders</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div><div class="panel-title">Recent Activity</div><div class="panel-sub">Live feed</div></div>
+        </div>
+        <div class="activity-item">
+          <div class="act-icon" style="background:rgba(74,222,128,.12)">✓</div>
+          <div><div class="act-text"><strong>Priya S.</strong> placed order #4821</div><div class="act-time">2 min ago</div></div>
+        </div>
+        <div class="activity-item">
+          <div class="act-icon" style="background:rgba(96,165,250,.12)">🚚</div>
+          <div><div class="act-text">Order #4819 shipped to <strong>Delhi</strong></div><div class="act-time">14 min ago</div></div>
+        </div>
+        <div class="activity-item">
+          <div class="act-icon" style="background:rgba(248,113,113,.12)">↩</div>
+          <div><div class="act-text"><strong>Rohan M.</strong> requested a return</div><div class="act-time">1 hr ago</div></div>
+        </div>
+        <div class="activity-item">
+          <div class="act-icon" style="background:rgba(251,146,60,.12)">⚠</div>
+          <div><div class="act-text"><strong>Merino Scarf</strong> low in stock (3 left)</div><div class="act-time">2 hr ago</div></div>
+        </div>
+        <div class="activity-item">
+          <div class="act-icon" style="background:rgba(232,245,94,.12)">★</div>
+          <div><div class="act-text"><strong>Ananya K.</strong> left a 5-star review</div><div class="act-time">3 hr ago</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS TABLE + TOP PRODUCTS -->
+    <div class="grid-2" style="margin-bottom:1.2rem">
+      <div class="panel">
+        <div class="panel-head">
+          <div><div class="panel-title">Recent Orders</div><div class="panel-sub">Latest 5 transactions</div></div>
+          <button class="panel-action">View All</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Order</th><th>Customer</th><th>Amount</th><th>Status</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="ordersTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div><div class="panel-title">Top Products</div><div class="panel-sub">By revenue this month</div></div>
+        </div>
+        <div id="topProducts"></div>
+      </div>
+    </div>
+
+    <!-- MINI STATS + INVENTORY -->
+    <div class="grid-3">
+      <div class="mini-stat"><span class="mini-stat-emoji">📬</span><span class="mini-stat-num">94.2%</span><span class="mini-stat-label">Email Open Rate</span></div>
+      <div class="mini-stat"><span class="mini-stat-emoji">⏱</span><span class="mini-stat-num">1.4s</span><span class="mini-stat-label">Avg Page Load</span></div>
+      <div class="mini-stat"><span class="mini-stat-emoji">🔄</span><span class="mini-stat-num">22%</span><span class="mini-stat-label">Repeat Purchase</span></div>
+    </div>
+
+    <div class="panel" style="margin-bottom:1.2rem">
+      <div class="panel-head">
+        <div><div class="panel-title">Inventory Status</div><div class="panel-sub">Stock levels</div></div>
+        <button class="panel-action" onclick="showToast('Restocking order placed!')">Restock All Low</button>
+      </div>
+      <div id="inventoryList"></div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ADD PRODUCT MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title">Add New Product</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Product Name</label>
+        <input class="form-input" placeholder="e.g. Linen Blazer" type="text"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-input">
+          <option>Clothing</option><option>Electronics</option>
+          <option>Home & Living</option><option>Beauty</option><option>Accessories</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Price (₹)</label>
+        <input class="form-input" placeholder="2999" type="number"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Stock Qty</label>
+        <input class="form-input" placeholder="50" type="number"/>
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Description</label>
+        <input class="form-input" placeholder="Short product description..." type="text"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">SKU</label>
+        <input class="form-input" placeholder="SHF-001" type="text"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-input"><option>Active</option><option>Draft</option><option>Archived</option></select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveProduct()">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+const ShiftSecurity=(()=>{function generateCSRF(){const a=new Uint8Array(32);crypto.getRandomValues(a);return Array.from(a).map(b=>b.toString(16).padStart(2,"0")).join("")}function getCSRFToken(){let t=sessionStorage.getItem("csrf_token");if(!t){t=generateCSRF();sessionStorage.setItem("csrf_token",t)}return t}function injectCSRF(){document.querySelectorAll("form").forEach(f=>{if(!f.querySelector("[name=_csrf]")){const i=document.createElement("input");i.type="hidden";i.name="_csrf";i.value=getCSRFToken();f.appendChild(i)}})}function sanitize(s){if(typeof s!=="string")return"";return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#x27;").trim().slice(0,2000)}const _rl={};function rateLimit(k,max,win){const now=Date.now();if(!_rl[k])_rl[k]={count:0,start:now};const r=_rl[k];if(now-r.start>win){r.count=0;r.start=now}r.count++;return r.count<=max}function getRemainingAttempts(k,max){return Math.max(0,max-(_rl[k]?.count||0))}function recordFailedLogin(id){const k="fail_"+id;const d=JSON.parse(sessionStorage.getItem(k)||"{"count":0,"until":0}");d.count++;if(d.count>=5)d.until=Date.now()+15*60*1000;sessionStorage.setItem(k,JSON.stringify(d));return d}function isLockedOut(id){const d=JSON.parse(sessionStorage.getItem("fail_"+id)||"{"count":0,"until":0}");return d.until>Date.now()}function getLockoutRemaining(id){const d=JSON.parse(sessionStorage.getItem("fail_"+id)||"{"count":0,"until":0}");return Math.max(0,Math.ceil((d.until-Date.now())/1000))}function clearFailedLogins(id){sessionStorage.removeItem("fail_"+id)}const SK="shift_session",SD=30*60*1000;function createSession(u){const s={user:u,token:generateCSRF(),created:Date.now(),expires:Date.now()+SD,role:u.role||"customer"};sessionStorage.setItem(SK,JSON.stringify(s));return s}function getSession(){try{const s=JSON.parse(sessionStorage.getItem(SK));if(!s||Date.now()>s.expires){clearSession();return null}s.expires=Date.now()+SD;sessionStorage.setItem(SK,JSON.stringify(s));return s}catch{return null}}function clearSession(){sessionStorage.removeItem(SK)}function requireAuth(role){const s=getSession();if(!s){window.location.href="login.html";return false}if(role&&s.role!==role){window.location.href="index.html";return false}return s}function requireAdmin(){return requireAuth("admin")}function generateOTP(){return Math.floor(100000+Math.random()*900000).toString()}async function storeOTP(otp){const enc=new TextEncoder();const hash=await crypto.subtle.digest("SHA-256",enc.encode(otp+"shift_salt"));const hex=Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,"0")).join("");sessionStorage.setItem("pending_otp",JSON.stringify({hash:hex,exp:Date.now()+5*60*1000}));return otp}async function verifyOTP(input){const stored=JSON.parse(sessionStorage.getItem("pending_otp")||"null");if(!stored||Date.now()>stored.exp)return false;const enc=new TextEncoder();const hash=await crypto.subtle.digest("SHA-256",enc.encode(input+"shift_salt"));const hex=Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,"0")).join("");if(hex===stored.hash){sessionStorage.removeItem("pending_otp");return true}return false}const validators={email:v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),phone:v=>/^[\+]?[0-9]{10,13}$/.test(v.replace(/\s/g,"")),pin:v=>/^[0-9]{6}$/.test(v),name:v=>v.trim().length>=2&&v.trim().length<=80,password:v=>v.length>=8&&/[A-Z]/.test(v)&&/[0-9]/.test(v)&&/[^A-Za-z0-9]/.test(v),cardNum:v=>{const n=v.replace(/\s/g,"");if(!/^\d{13,19}$/.test(n))return false;let s=0,alt=false;for(let i=n.length-1;i>=0;i--){let d=+n[i];if(alt){d*=2;if(d>9)d-=9}s+=d;alt=!alt}return s%10===0},cvv:v=>/^\d{3,4}$/.test(v),expiry:v=>{const m=v.replace(/\s/g,"").match(/^(\d{2})[\/\-](\d{2,4})$/);if(!m)return false;const mo=parseInt(m[1]),yr=parseInt(m[2].length===2?"20"+m[2]:m[2]),now=new Date();return mo>=1&&mo<=12&&(yr>now.getFullYear()||(yr===now.getFullYear()&&mo>=now.getMonth()+1))}};const _log=JSON.parse(sessionStorage.getItem("audit_log")||"[]");function auditLog(action,details={}){_log.push({action,details,time:new Date().toISOString(),page:location.pathname});if(_log.length>200)_log.shift();sessionStorage.setItem("audit_log",JSON.stringify(_log))}function getAuditLog(){return[..._log]}function initTheme(dId="darkOpt",lId="lightOpt",tId="themeToggle"){const html=document.documentElement;const dOpt=document.getElementById(dId);const lOpt=document.getElementById(lId);function setTheme(t){html.setAttribute("data-theme",t);if(dOpt)dOpt.classList.toggle("active",t==="dark");if(lOpt)lOpt.classList.toggle("active",t==="light");localStorage.setItem("shift_theme",t)}const saved=localStorage.getItem("shift_theme");if(saved)setTheme(saved);document.getElementById(tId)?.addEventListener("click",()=>setTheme(html.getAttribute("data-theme")==="dark"?"light":"dark"));return setTheme}document.addEventListener("DOMContentLoaded",injectCSRF);return{getCSRFToken,sanitize,rateLimit,getRemainingAttempts,recordFailedLogin,isLockedOut,getLockoutRemaining,clearFailedLogins,createSession,getSession,clearSession,requireAuth,requireAdmin,generateOTP,storeOTP,verifyOTP,validators,auditLog,getAuditLog,initTheme};})();
+</script>
+<script>
+/* THEME */
+const html=document.documentElement;
+const darkOpt=document.getElementById('darkOpt');
+const lightOpt=document.getElementById('lightOpt');
+function setTheme(t){
+  html.setAttribute('data-theme',t);
+  darkOpt.classList.toggle('active',t==='dark');
+  lightOpt.classList.toggle('active',t==='light');
+  localStorage.setItem('theme',t);
+}
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  setTheme(html.getAttribute('data-theme')==='dark'?'light':'dark');
+});
+const saved=localStorage.getItem('theme');
+if(saved)setTheme(saved);
+
+/* CHART */
+const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const vals=[62,48,75,55,90,82,70];
+const bars=document.getElementById('chartBars');
+bars.innerHTML=days.map((d,i)=>`
+  <div class="bar-wrap">
+    <div class="bar" style="height:${vals[i]}%"></div>
+    <span class="bar-label">${d}</span>
+  </div>
+`).join('');
+
+/* ORDERS */
+const orders=[
+  {id:'#4821',name:'Priya Sharma',city:'Mumbai',emoji:'👩',amount:'₹8,499',status:'s-paid',label:'Paid'},
+  {id:'#4820',name:'Arjun Mehta',city:'Delhi',emoji:'👨',amount:'₹5,299',status:'s-shipped',label:'Shipped'},
+  {id:'#4819',name:'Kavya Nair',city:'Kochi',emoji:'👩',amount:'₹2,199',status:'s-shipped',label:'Shipped'},
+  {id:'#4818',name:'Rohan Das',city:'Kolkata',emoji:'👨',amount:'₹1,499',status:'s-pending',label:'Pending'},
+  {id:'#4817',name:'Ananya K.',city:'Bangalore',emoji:'👩',amount:'₹9,999',status:'s-cancelled',label:'Cancelled'},
+];
+document.getElementById('ordersTable').innerHTML=orders.map(o=>`
+  <tr>
+    <td class="order-id">${o.id}</td>
+    <td><div class="cust-cell"><div class="cust-avatar">${o.emoji}</div><div><div class="cust-name">${o.name}</div><div class="cust-city">${o.city}</div></div></div></td>
+    <td style="font-family:'Geist Mono',monospace;font-weight:600">${o.amount}</td>
+    <td><span class="status-badge ${o.status}">${o.label}</span></td>
+    <td><button class="action-btn" onclick="showToast('Order ${o.id} opened')">View</button></td>
+  </tr>
+`).join('');
+
+/* TOP PRODUCTS */
+const topProds=[
+  {emoji:'⌚',name:'Matte Watch',sales:'43 sales',rev:'₹4.3L'},
+  {emoji:'🧥',name:'Minimal Trench',sales:'38 sales',rev:'₹3.2L'},
+  {emoji:'🎧',name:'Focus Headphones',sales:'61 sales',rev:'₹3.2L'},
+  {emoji:'👜',name:'Canvas Day Bag',sales:'29 sales',rev:'₹1.0L'},
+];
+document.getElementById('topProducts').innerHTML=topProds.map((p,i)=>`
+  <div class="prod-row">
+    <span class="prod-rank">${i+1}</span>
+    <div class="prod-emoji-box">${p.emoji}</div>
+    <div class="prod-info"><div class="prod-title">${p.name}</div><div class="prod-sales">${p.sales}</div></div>
+    <div class="prod-rev">${p.rev}</div>
+  </div>
+`).join('');
+
+/* INVENTORY */
+const inv=[
+  {name:'Minimal Trench Coat',stock:24,max:50,color:'var(--green)'},
+  {name:'Focus Headphones',stock:8,max:50,color:'var(--orange)'},
+  {name:'Merino Scarf',stock:3,max:50,color:'var(--red)'},
+  {name:'Matte Watch',stock:15,max:30,color:'var(--blue)'},
+  {name:'Glass Skin Serum',stock:41,max:100,color:'var(--green)'},
+];
+document.getElementById('inventoryList').innerHTML=inv.map(i=>`
+  <div style="padding:.9rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:1rem">
+    <div style="flex:1">
+      <div style="font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:.4rem">${i.name}</div>
+      <div class="inv-bar-wrap"><div class="inv-bar-bg"><div class="inv-bar-fill" style="width:${(i.stock/i.max*100).toFixed(0)}%;background:${i.color}"></div></div></div>
+    </div>
+    <div style="font-family:'Geist Mono',monospace;font-size:.75rem;color:var(--text2);flex-shrink:0">${i.stock}/${i.max}</div>
+    <button class="action-btn" onclick="showToast('${i.name} restocked!')">${i.stock<10?'⚠ Restock':'Manage'}</button>
+  </div>
+`).join('');
+
+/* MODAL */
+function openModal(){document.getElementById('modalOverlay').classList.add('open')}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open')}
+document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('modalOverlay'))closeModal()});
+function saveProduct(){closeModal();showToast('✓ Product added successfully!')}
+
+/* TOAST */
+let toastT;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2500);
+}
+</script>
+
+</body>
+</html>

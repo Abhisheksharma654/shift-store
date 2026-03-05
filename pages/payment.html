@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SHIFT — Checkout</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+[data-theme="dark"]{
+  --bg:#0c0c0c; --bg2:#111; --surface:#161616; --card:#1a1a1a;
+  --border:#252525; --border2:#333;
+  --text:#f0ece6; --text2:#888; --text3:#444;
+  --accent:#e8f55e; --accent-fg:#0c0c0c;
+  --green:#4ade80; --red:#f87171;
+  --input-bg:#111; --shadow:rgba(0,0,0,.5);
+}
+[data-theme="light"]{
+  --bg:#f7f6f3; --bg2:#edecea; --surface:#ffffff; --card:#ffffff;
+  --border:#e2dfd8; --border2:#ccc;
+  --text:#1a1a18; --text2:#6b6860; --text3:#bbb;
+  --accent:#1a1a18; --accent-fg:#f7f6f3;
+  --green:#16a34a; --red:#dc2626;
+  --input-bg:#fafaf8; --shadow:rgba(0,0,0,.07);
+}
+
+html,body{min-height:100%}
+body{
+  font-family:'Syne',sans-serif;
+  background:var(--bg); color:var(--text);
+  transition:background .3s,color .3s;
+}
+
+/* ── NAV ── */
+nav{
+  padding:1.2rem 5%;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  background:var(--surface);
+  position:sticky;top:0;z-index:100;transition:background .3s;
+}
+.nav-logo{
+  font-size:1.2rem;font-weight:800;color:var(--text);
+  text-decoration:none;display:flex;align-items:center;gap:.4rem;
+}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.nav-steps{display:flex;align-items:center;gap:.5rem}
+.step{
+  display:flex;align-items:center;gap:.4rem;
+  font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text3);transition:color .3s;
+}
+.step.active{color:var(--text)}
+.step.done{color:var(--green)}
+.step-num{
+  width:22px;height:22px;border-radius:50%;
+  border:1px solid currentColor;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.6rem;font-family:'Geist Mono',monospace;font-weight:600;
+  transition:background .3s,color .3s;
+}
+.step.active .step-num{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.step.done .step-num{background:var(--green);color:#fff;border-color:var(--green)}
+.step-sep{width:28px;height:1px;background:var(--border)}
+
+.theme-toggle{
+  display:flex;align-items:center;background:var(--bg2);
+  border-radius:100px;padding:3px;border:1px solid var(--border);cursor:pointer;
+}
+.toggle-opt{
+  width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.72rem;transition:background .2s;color:var(--text3);
+}
+.toggle-opt.active{background:var(--accent);color:var(--accent-fg)}
+
+/* ── LAYOUT ── */
+.checkout-layout{
+  display:grid;grid-template-columns:1fr 420px;
+  min-height:calc(100vh - 61px);
+  max-width:1100px;margin:0 auto;
+  padding:3rem 2rem;gap:3rem;
+}
+@media(max-width:860px){.checkout-layout{grid-template-columns:1fr;padding:2rem 1.2rem}}
+
+/* ── LEFT ── */
+.checkout-left{}
+
+/* ── SECTION BLOCK ── */
+.form-block{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:1.8rem;margin-bottom:1.5rem;
+  transition:background .3s,border-color .3s;
+}
+.block-title{
+  font-family:'Instrument Serif',serif;
+  font-size:1.2rem;color:var(--text);margin-bottom:1.4rem;
+  display:flex;align-items:center;gap:.6rem;
+}
+.block-num{
+  width:26px;height:26px;border-radius:50%;
+  background:var(--accent);color:var(--accent-fg);
+  font-size:.7rem;font-weight:700;font-family:'Geist Mono',monospace;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ── FORM ── */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-row.tri{grid-template-columns:1fr 1fr 1fr}
+.form-group{display:flex;flex-direction:column;gap:.4rem;margin-bottom:.9rem}
+.form-group.full{grid-column:1/-1}
+.form-label{
+  font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--text2);font-family:'Geist Mono',monospace;
+}
+.form-input{
+  padding:.75rem 1rem;background:var(--input-bg);
+  border:1px solid var(--border);color:var(--text);
+  border-radius:10px;font-family:'Syne',sans-serif;font-size:.85rem;
+  outline:none;transition:border-color .2s,box-shadow .2s;
+  -webkit-appearance:none;
+}
+.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent)}
+.form-input.error{border-color:var(--red)}
+.form-input::placeholder{color:var(--text3)}
+select.form-input{cursor:pointer}
+.form-hint{font-size:.65rem;color:var(--text2);font-family:'Geist Mono',monospace}
+.form-error{font-size:.65rem;color:var(--red);font-family:'Geist Mono',monospace;display:none}
+.form-group.has-error .form-error{display:block}
+.form-group.has-error .form-input{border-color:var(--red)}
+
+/* ── PAYMENT METHODS ── */
+.pay-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin-bottom:1.4rem}
+.pay-method{
+  padding:.9rem;border:2px solid var(--border);border-radius:12px;
+  cursor:pointer;text-align:center;transition:all .2s;
+  position:relative;
+}
+.pay-method:hover{border-color:var(--border2)}
+.pay-method.selected{border-color:var(--accent)}
+.pay-method input[type=radio]{display:none}
+.pay-icon{font-size:1.4rem;margin-bottom:.3rem;display:block}
+.pay-name{font-size:.72rem;font-weight:600;color:var(--text)}
+.pay-sub{font-size:.6rem;color:var(--text2);margin-top:.1rem}
+.pay-check{
+  position:absolute;top:.4rem;right:.4rem;
+  width:16px;height:16px;border-radius:50%;
+  background:var(--accent);color:var(--accent-fg);
+  font-size:.55rem;display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s;
+}
+.pay-method.selected .pay-check{opacity:1}
+
+/* ── CARD INPUT VISUAL ── */
+.card-visual{
+  background:linear-gradient(135deg,#1a1a1a 0%,#2a2a2a 100%);
+  border-radius:14px;padding:1.4rem;margin-bottom:1.4rem;
+  position:relative;overflow:hidden;
+  aspect-ratio:1.6/1;display:flex;flex-direction:column;justify-content:space-between;
+  border:1px solid var(--border2);
+  transition:background .3s;
+}
+[data-theme="light"] .card-visual{background:linear-gradient(135deg,#1a1a18 0%,#2d2d2a 100%)}
+.card-visual::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:160px;height:160px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,245,94,.08),transparent 70%);
+}
+.card-chip{font-size:1.4rem;line-height:1}
+.card-number-display{
+  font-family:'Geist Mono',monospace;font-size:1.05rem;
+  letter-spacing:.18em;color:rgba(255,255,255,.85);
+}
+.card-bottom{display:flex;align-items:flex-end;justify-content:space-between}
+.card-holder-label{font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.2rem}
+.card-holder-name{font-size:.8rem;color:rgba(255,255,255,.85);text-transform:uppercase;letter-spacing:.05em}
+.card-expiry-label{font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.2rem}
+.card-expiry-val{font-family:'Geist Mono',monospace;font-size:.8rem;color:rgba(255,255,255,.85)}
+.card-brand{font-size:1.6rem;position:absolute;top:1rem;right:1.2rem}
+
+/* ── UPI ── */
+.upi-section{text-align:center;padding:1.5rem 0}
+.upi-apps{display:flex;justify-content:center;gap:1rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.upi-app{
+  padding:.7rem 1.2rem;border:1px solid var(--border);border-radius:12px;
+  cursor:pointer;font-size:.8rem;font-weight:600;color:var(--text2);
+  transition:all .2s;display:flex;align-items:center;gap:.4rem;background:var(--surface);
+}
+.upi-app:hover,.upi-app.selected{border-color:var(--accent);color:var(--text);background:var(--card)}
+.upi-or{color:var(--text3);font-size:.75rem;margin:.8rem 0}
+
+/* ── COD ── */
+.cod-info{
+  display:flex;align-items:flex-start;gap:1rem;
+  background:var(--bg2);border-radius:12px;padding:1.2rem;border:1px solid var(--border);
+}
+.cod-icon{font-size:1.8rem}
+.cod-title{font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:.3rem}
+.cod-desc{font-size:.78rem;color:var(--text2);line-height:1.6}
+
+/* ── RIGHT (ORDER SUMMARY) ── */
+.order-summary{
+  position:sticky;top:100px;align-self:start;
+}
+.summary-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;transition:background .3s;
+}
+.summary-head{
+  padding:1.2rem 1.4rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.summary-title{font-size:.85rem;font-weight:700;color:var(--text)}
+.summary-toggle{
+  font-size:.72rem;color:var(--accent);cursor:pointer;
+  font-family:'Geist Mono',monospace;background:none;border:none;
+}
+
+.cart-items{padding:.8rem 1.4rem}
+.cart-item{
+  display:flex;align-items:center;gap:1rem;
+  padding:.7rem 0;border-bottom:1px solid var(--border);
+}
+.cart-item:last-child{border-bottom:none}
+.item-img{
+  width:50px;height:50px;border-radius:10px;
+  background:var(--bg2);display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;flex-shrink:0;position:relative;
+}
+.item-qty-badge{
+  position:absolute;top:-5px;right:-5px;
+  width:17px;height:17px;border-radius:50%;
+  background:var(--accent);color:var(--accent-fg);
+  font-size:.58rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.item-info{flex:1}
+.item-name{font-size:.82rem;font-weight:600;color:var(--text)}
+.item-sub{font-size:.65rem;color:var(--text2);margin-top:.15rem}
+.item-price{font-family:'Geist Mono',monospace;font-size:.82rem;font-weight:600;color:var(--text);flex-shrink:0}
+
+/* ── COUPON ── */
+.coupon-row{
+  display:flex;gap:.6rem;padding:1rem 1.4rem;
+  border-bottom:1px solid var(--border);
+}
+.coupon-input{
+  flex:1;padding:.6rem .9rem;background:var(--input-bg);
+  border:1px solid var(--border);color:var(--text);
+  border-radius:8px;font-family:'Syne',sans-serif;font-size:.78rem;
+  outline:none;transition:border-color .2s;
+}
+.coupon-input:focus{border-color:var(--accent)}
+.coupon-input::placeholder{color:var(--text3)}
+.coupon-btn{
+  padding:.6rem 1.2rem;background:none;border:1px solid var(--border);
+  color:var(--text2);border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;
+  font-size:.72rem;font-weight:600;transition:all .2s;flex-shrink:0;
+}
+.coupon-btn:hover{border-color:var(--accent);color:var(--accent)}
+.coupon-success{display:none;padding:.4rem 1.4rem;font-size:.7rem;color:var(--green);font-family:'Geist Mono',monospace}
+
+/* ── PRICE BREAKDOWN ── */
+.price-breakdown{padding:1.2rem 1.4rem;border-bottom:1px solid var(--border)}
+.price-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:.6rem;font-size:.8rem;
+}
+.price-row:last-child{margin-bottom:0}
+.price-label{color:var(--text2)}
+.price-val{font-family:'Geist Mono',monospace;color:var(--text)}
+.price-val.green{color:var(--green)}
+.price-row.total{
+  font-size:.95rem;font-weight:700;margin-top:.4rem;
+  padding-top:.8rem;border-top:1px solid var(--border);
+}
+.price-row.total .price-label{color:var(--text)}
+.price-row.total .price-val{color:var(--accent);font-size:1.1rem}
+[data-theme="light"] .price-row.total .price-val{color:var(--text)}
+
+/* ── PLACE ORDER BTN ── */
+.place-order-wrap{padding:1.2rem 1.4rem}
+.btn-place{
+  width:100%;padding:1rem;
+  background:var(--accent);color:var(--accent-fg);
+  border:none;cursor:pointer;font-family:'Syne',sans-serif;
+  font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+  border-radius:12px;transition:all .3s cubic-bezier(.34,1.56,.64,1);
+  position:relative;overflow:hidden;
+}
+.btn-place:hover{transform:scale(1.02);box-shadow:0 8px 32px color-mix(in srgb,var(--accent) 30%,transparent)}
+.btn-place:active{transform:scale(.98)}
+.btn-place.loading{pointer-events:none}
+.btn-place .btn-text{transition:opacity .2s}
+.btn-place .btn-loader{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s;
+}
+.btn-place.loading .btn-text{opacity:0}
+.btn-place.loading .btn-loader{opacity:1}
+.spinner{
+  width:20px;height:20px;border:2px solid var(--accent-fg);
+  border-top-color:transparent;border-radius:50%;
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.secure-note{
+  text-align:center;font-size:.65rem;color:var(--text3);
+  margin-top:.8rem;font-family:'Geist Mono',monospace;
+  display:flex;align-items:center;justify-content:center;gap:.4rem;
+}
+
+/* ── SUCCESS SCREEN ── */
+.success-screen{
+  display:none;position:fixed;inset:0;z-index:999;
+  background:var(--bg);flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:2rem;
+}
+.success-screen.show{display:flex}
+.success-icon{
+  font-size:4rem;margin-bottom:1.5rem;
+  animation:pop .6s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes pop{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:none}}
+.success-title{
+  font-family:'Instrument Serif',serif;
+  font-size:2.5rem;color:var(--text);margin-bottom:.8rem;
+}
+.success-sub{font-size:.9rem;color:var(--text2);margin-bottom:.5rem}
+.success-order{font-family:'Geist Mono',monospace;font-size:.8rem;color:var(--accent);margin-bottom:2.5rem}
+[data-theme="light"] .success-order{color:var(--text)}
+.success-actions{display:flex;gap:1rem}
+.btn-primary{
+  padding:.85rem 2rem;background:var(--accent);color:var(--accent-fg);
+  border:none;cursor:pointer;font-family:'Syne',sans-serif;
+  font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
+  border-radius:100px;transition:opacity .2s,transform .2s;
+}
+.btn-primary:hover{opacity:.85;transform:scale(1.03)}
+.btn-ghost{
+  padding:.85rem 2rem;background:none;color:var(--text2);
+  border:1px solid var(--border);cursor:pointer;font-family:'Syne',sans-serif;
+  font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+  border-radius:100px;transition:all .2s;
+}
+.btn-ghost:hover{border-color:var(--text);color:var(--text)}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(60px);
+  background:var(--text);color:var(--bg);
+  padding:.75rem 1.5rem;border-radius:100px;
+  font-size:.78rem;font-weight:600;z-index:9999;
+  opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;
+}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+@media(max-width:580px){
+  .pay-methods{grid-template-columns:1fr 1fr}
+  .form-row{grid-template-columns:1fr}
+  .form-row.tri{grid-template-columns:1fr 1fr}
+  .nav-steps{display:none}
+  .success-actions{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- SUCCESS SCREEN -->
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">✅</div>
+  <h2 class="success-title">Order Placed!</h2>
+  <p class="success-sub">Thank you for your purchase. We'll email your receipt shortly.</p>
+  <p class="success-order" id="successOrderId">Order #4822 · Estimated delivery: 3–5 days</p>
+  <div class="success-actions">
+    <a href="index.html" class="btn-primary">Continue Shopping</a>
+    <a href="admin.html" class="btn-ghost">View in Admin</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html"><span class="logo-dot"></span>SHIFT</a>
+  <div class="nav-steps">
+    <div class="step done" id="step1"><div class="step-num">✓</div><span>Cart</span></div>
+    <div class="step-sep"></div>
+    <div class="step active" id="step2"><div class="step-num">2</div><span>Checkout</span></div>
+    <div class="step-sep"></div>
+    <div class="step" id="step3"><div class="step-num">3</div><span>Confirm</span></div>
+  </div>
+  <div class="theme-toggle" id="themeToggle">
+    <div class="toggle-opt active" id="darkOpt">🌙</div>
+    <div class="toggle-opt" id="lightOpt">☀️</div>
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="checkout-layout">
+
+  <!-- ── LEFT ── -->
+  <div class="checkout-left">
+
+    <!-- CONTACT -->
+    <div class="form-block">
+      <div class="block-title"><span class="block-num">1</span>Contact Information</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input class="form-input" type="text" placeholder="Arjun" id="firstName"/>
+          <span class="form-error">Required</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input class="form-input" type="text" placeholder="Mehta"/>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" type="email" placeholder="arjun@email.com" id="email"/>
+          <span class="form-error">Enter a valid email</span>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Phone Number</label>
+          <input class="form-input" type="tel" placeholder="+91 98765 43210" id="phone"/>
+          <span class="form-hint">For delivery updates via SMS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHIPPING -->
+    <div class="form-block">
+      <div class="block-title"><span class="block-num">2</span>Shipping Address</div>
+      <div class="form-row">
+        <div class="form-group full">
+          <label class="form-label">Street Address</label>
+          <input class="form-input" type="text" placeholder="Flat 4B, Sunrise Apartments, MG Road"/>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Apt / Floor / Landmark (optional)</label>
+          <input class="form-input" type="text" placeholder="Near HDFC Bank"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">City</label>
+          <input class="form-input" type="text" placeholder="Mumbai"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">State</label>
+          <select class="form-input">
+            <option value="">Select state</option>
+            <option>Maharashtra</option><option>Delhi</option>
+            <option>Karnataka</option><option>Tamil Nadu</option>
+            <option>Gujarat</option><option>Rajasthan</option>
+            <option>West Bengal</option><option>Uttar Pradesh</option>
+            <option>Kerala</option><option>Telangana</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">PIN Code</label>
+          <input class="form-input" type="text" placeholder="400001" maxlength="6"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Country</label>
+          <select class="form-input"><option>India</option></select>
+        </div>
+      </div>
+
+      <!-- DELIVERY OPTIONS -->
+      <div style="margin-top:.6rem">
+        <div class="form-label" style="margin-bottom:.8rem">Delivery Method</div>
+        <div style="display:flex;flex-direction:column;gap:.6rem" id="deliveryOptions">
+          <label class="pay-method selected" style="display:flex;align-items:center;gap:1rem;text-align:left;padding:1rem 1.2rem;cursor:pointer">
+            <input type="radio" name="delivery" value="standard" checked/>
+            <span style="font-size:1.2rem">🚚</span>
+            <div style="flex:1"><div style="font-size:.82rem;font-weight:600;color:var(--text)">Standard Delivery</div><div style="font-size:.65rem;color:var(--text2)">3–5 business days</div></div>
+            <span style="font-family:'Geist Mono',monospace;font-size:.78rem;color:var(--green);font-weight:600">FREE</span>
+            <span class="pay-check">✓</span>
+          </label>
+          <label class="pay-method" style="display:flex;align-items:center;gap:1rem;text-align:left;padding:1rem 1.2rem;cursor:pointer">
+            <input type="radio" name="delivery" value="express"/>
+            <span style="font-size:1.2rem">⚡</span>
+            <div style="flex:1"><div style="font-size:.82rem;font-weight:600;color:var(--text)">Express Delivery</div><div style="font-size:.65rem;color:var(--text2)">Next business day</div></div>
+            <span style="font-family:'Geist Mono',monospace;font-size:.78rem;font-weight:600;color:var(--text)">₹199</span>
+            <span class="pay-check">✓</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYMENT -->
+    <div class="form-block">
+      <div class="block-title"><span class="block-num">3</span>Payment Method</div>
+
+      <div class="pay-methods">
+        <label class="pay-method selected" onclick="selectPayment('card',this)">
+          <input type="radio" name="pay" value="card" checked/>
+          <span class="pay-icon">💳</span>
+          <div class="pay-name">Card</div>
+          <div class="pay-sub">Visa / MC / RuPay</div>
+          <span class="pay-check">✓</span>
+        </label>
+        <label class="pay-method" onclick="selectPayment('upi',this)">
+          <input type="radio" name="pay" value="upi"/>
+          <span class="pay-icon">📱</span>
+          <div class="pay-name">UPI</div>
+          <div class="pay-sub">GPay · PhonePe · Paytm</div>
+          <span class="pay-check">✓</span>
+        </label>
+        <label class="pay-method" onclick="selectPayment('cod',this)">
+          <input type="radio" name="pay" value="cod"/>
+          <span class="pay-icon">💵</span>
+          <div class="pay-name">Cash on Delivery</div>
+          <div class="pay-sub">Pay when it arrives</div>
+          <span class="pay-check">✓</span>
+        </label>
+      </div>
+
+      <!-- CARD SECTION -->
+      <div id="cardSection">
+        <div class="card-visual">
+          <div class="card-chip">💳</div>
+          <div class="card-number-display" id="cardNumDisplay">•••• •••• •••• ••••</div>
+          <div class="card-bottom">
+            <div>
+              <div class="card-holder-label">Card Holder</div>
+              <div class="card-holder-name" id="cardHolderDisplay">YOUR NAME</div>
+            </div>
+            <div>
+              <div class="card-expiry-label">Expires</div>
+              <div class="card-expiry-val" id="cardExpDisplay">MM/YY</div>
+            </div>
+          </div>
+          <span class="card-brand" id="cardBrand">💳</span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group full">
+            <label class="form-label">Card Number</label>
+            <input class="form-input" type="text" placeholder="1234 5678 9012 3456" maxlength="19" id="cardNum" oninput="formatCard(this)"/>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Cardholder Name</label>
+            <input class="form-input" type="text" placeholder="ARJUN MEHTA" id="cardHolder" oninput="updateHolder(this)"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Expiry Date</label>
+            <input class="form-input" type="text" placeholder="MM / YY" maxlength="7" id="cardExp" oninput="formatExpiry(this)"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">CVV</label>
+            <input class="form-input" type="password" placeholder="•••" maxlength="4" id="cardCvv"/>
+            <span class="form-hint">3–4 digits on back of card</span>
+          </div>
+        </div>
+
+        <label style="display:flex;align-items:center;gap:.6rem;cursor:pointer;font-size:.78rem;color:var(--text2);margin-top:.4rem">
+          <input type="checkbox" style="accent-color:var(--accent)"/> Save card for future purchases
+        </label>
+      </div>
+
+      <!-- UPI SECTION -->
+      <div id="upiSection" style="display:none">
+        <div class="upi-section">
+          <div class="upi-apps">
+            <div class="upi-app" onclick="selectUPI(this)">🟢 GPay</div>
+            <div class="upi-app" onclick="selectUPI(this)">🟣 PhonePe</div>
+            <div class="upi-app" onclick="selectUPI(this)">🔵 Paytm</div>
+            <div class="upi-app" onclick="selectUPI(this)">🟠 BHIM</div>
+          </div>
+          <div class="upi-or">— or enter UPI ID —</div>
+          <div class="form-group" style="max-width:360px;margin:0 auto">
+            <label class="form-label">UPI ID</label>
+            <input class="form-input" type="text" placeholder="yourname@upi"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- COD SECTION -->
+      <div id="codSection" style="display:none">
+        <div class="cod-info">
+          <span class="cod-icon">📦</span>
+          <div>
+            <div class="cod-title">Cash on Delivery</div>
+            <div class="cod-desc">Pay ₹14,997 in cash when your order is delivered. A nominal COD charge of ₹40 applies. Keep exact change ready for a smooth delivery experience.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- ── RIGHT (ORDER SUMMARY) ── -->
+  <div class="order-summary">
+    <div class="summary-card">
+      <div class="summary-head">
+        <div class="summary-title">Order Summary</div>
+        <button class="summary-toggle" onclick="this.textContent=this.textContent==='Hide'?'Show':'Hide'">Hide</button>
+      </div>
+
+      <div class="cart-items">
+        <div class="cart-item">
+          <div class="item-img">🧥<span class="item-qty-badge">1</span></div>
+          <div class="item-info"><div class="item-name">Minimal Trench Coat</div><div class="item-sub">Size: M · Colour: Charcoal</div></div>
+          <div class="item-price">₹8,499</div>
+        </div>
+        <div class="cart-item">
+          <div class="item-img">🎧<span class="item-qty-badge">1</span></div>
+          <div class="item-info"><div class="item-name">Focus Headphones</div><div class="item-sub">Colour: Matte Black</div></div>
+          <div class="item-price">₹5,299</div>
+        </div>
+        <div class="cart-item">
+          <div class="item-img">🕯<span class="item-qty-badge">1</span></div>
+          <div class="item-info"><div class="item-name">Linen Table Lamp</div><div class="item-sub">Finish: Warm White</div></div>
+          <div class="item-price">₹1,199</div>
+        </div>
+      </div>
+
+      <div class="coupon-row">
+        <input class="coupon-input" placeholder="Coupon code" id="couponInput"/>
+        <button class="coupon-btn" onclick="applyCoupon()">Apply</button>
+      </div>
+      <div class="coupon-success" id="couponSuccess">✓ SHIFT10 applied — ₹1,500 off!</div>
+
+      <div class="price-breakdown">
+        <div class="price-row"><span class="price-label">Subtotal (3 items)</span><span class="price-val">₹14,997</span></div>
+        <div class="price-row"><span class="price-label">Shipping</span><span class="price-val green">FREE</span></div>
+        <div class="price-row" id="discountRow" style="display:none"><span class="price-label">Discount (SHIFT10)</span><span class="price-val green">−₹1,500</span></div>
+        <div class="price-row"><span class="price-label">GST (18%)</span><span class="price-val" id="gstVal">₹2,699</span></div>
+        <div class="price-row total"><span class="price-label">Total</span><span class="price-val" id="totalVal">₹17,696</span></div>
+      </div>
+
+      <div class="place-order-wrap">
+        <button class="btn-place" id="placeBtn" onclick="placeOrder()">
+          <span class="btn-text">Place Order →</span>
+          <span class="btn-loader"><span class="spinner"></span></span>
+        </button>
+        <div class="secure-note">🔒 Secured by 256-bit SSL encryption</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /layout -->
+
+<div id="toast"></div>
+
+<script>
+const ShiftSecurity=(()=>{function generateCSRF(){const a=new Uint8Array(32);crypto.getRandomValues(a);return Array.from(a).map(b=>b.toString(16).padStart(2,"0")).join("")}function getCSRFToken(){let t=sessionStorage.getItem("csrf_token");if(!t){t=generateCSRF();sessionStorage.setItem("csrf_token",t)}return t}function injectCSRF(){document.querySelectorAll("form").forEach(f=>{if(!f.querySelector("[name=_csrf]")){const i=document.createElement("input");i.type="hidden";i.name="_csrf";i.value=getCSRFToken();f.appendChild(i)}})}function sanitize(s){if(typeof s!=="string")return"";return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#x27;").trim().slice(0,2000)}const _rl={};function rateLimit(k,max,win){const now=Date.now();if(!_rl[k])_rl[k]={count:0,start:now};const r=_rl[k];if(now-r.start>win){r.count=0;r.start=now}r.count++;return r.count<=max}function getRemainingAttempts(k,max){return Math.max(0,max-(_rl[k]?.count||0))}function recordFailedLogin(id){const k="fail_"+id;const d=JSON.parse(sessionStorage.getItem(k)||"{"count":0,"until":0}");d.count++;if(d.count>=5)d.until=Date.now()+15*60*1000;sessionStorage.setItem(k,JSON.stringify(d));return d}function isLockedOut(id){const d=JSON.parse(sessionStorage.getItem("fail_"+id)||"{"count":0,"until":0}");return d.until>Date.now()}function getLockoutRemaining(id){const d=JSON.parse(sessionStorage.getItem("fail_"+id)||"{"count":0,"until":0}");return Math.max(0,Math.ceil((d.until-Date.now())/1000))}function clearFailedLogins(id){sessionStorage.removeItem("fail_"+id)}const SK="shift_session",SD=30*60*1000;function createSession(u){const s={user:u,token:generateCSRF(),created:Date.now(),expires:Date.now()+SD,role:u.role||"customer"};sessionStorage.setItem(SK,JSON.stringify(s));return s}function getSession(){try{const s=JSON.parse(sessionStorage.getItem(SK));if(!s||Date.now()>s.expires){clearSession();return null}s.expires=Date.now()+SD;sessionStorage.setItem(SK,JSON.stringify(s));return s}catch{return null}}function clearSession(){sessionStorage.removeItem(SK)}function requireAuth(role){const s=getSession();if(!s){window.location.href="login.html";return false}if(role&&s.role!==role){window.location.href="index.html";return false}return s}function requireAdmin(){return requireAuth("admin")}function generateOTP(){return Math.floor(100000+Math.random()*900000).toString()}async function storeOTP(otp){const enc=new TextEncoder();const hash=await crypto.subtle.digest("SHA-256",enc.encode(otp+"shift_salt"));const hex=Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,"0")).join("");sessionStorage.setItem("pending_otp",JSON.stringify({hash:hex,exp:Date.now()+5*60*1000}));return otp}async function verifyOTP(input){const stored=JSON.parse(sessionStorage.getItem("pending_otp")||"null");if(!stored||Date.now()>stored.exp)return false;const enc=new TextEncoder();const hash=await crypto.subtle.digest("SHA-256",enc.encode(input+"shift_salt"));const hex=Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,"0")).join("");if(hex===stored.hash){sessionStorage.removeItem("pending_otp");return true}return false}const validators={email:v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),phone:v=>/^[\+]?[0-9]{10,13}$/.test(v.replace(/\s/g,"")),pin:v=>/^[0-9]{6}$/.test(v),name:v=>v.trim().length>=2&&v.trim().length<=80,password:v=>v.length>=8&&/[A-Z]/.test(v)&&/[0-9]/.test(v)&&/[^A-Za-z0-9]/.test(v),cardNum:v=>{const n=v.replace(/\s/g,"");if(!/^\d{13,19}$/.test(n))return false;let s=0,alt=false;for(let i=n.length-1;i>=0;i--){let d=+n[i];if(alt){d*=2;if(d>9)d-=9}s+=d;alt=!alt}return s%10===0},cvv:v=>/^\d{3,4}$/.test(v),expiry:v=>{const m=v.replace(/\s/g,"").match(/^(\d{2})[\/\-](\d{2,4})$/);if(!m)return false;const mo=parseInt(m[1]),yr=parseInt(m[2].length===2?"20"+m[2]:m[2]),now=new Date();return mo>=1&&mo<=12&&(yr>now.getFullYear()||(yr===now.getFullYear()&&mo>=now.getMonth()+1))}};const _log=JSON.parse(sessionStorage.getItem("audit_log")||"[]");function auditLog(action,details={}){_log.push({action,details,time:new Date().toISOString(),page:location.pathname});if(_log.length>200)_log.shift();sessionStorage.setItem("audit_log",JSON.stringify(_log))}function getAuditLog(){return[..._log]}function initTheme(dId="darkOpt",lId="lightOpt",tId="themeToggle"){const html=document.documentElement;const dOpt=document.getElementById(dId);const lOpt=document.getElementById(lId);function setTheme(t){html.setAttribute("data-theme",t);if(dOpt)dOpt.classList.toggle("active",t==="dark");if(lOpt)lOpt.classList.toggle("active",t==="light");localStorage.setItem("shift_theme",t)}const saved=localStorage.getItem("shift_theme");if(saved)setTheme(saved);document.getElementById(tId)?.addEventListener("click",()=>setTheme(html.getAttribute("data-theme")==="dark"?"light":"dark"));return setTheme}document.addEventListener("DOMContentLoaded",injectCSRF);return{getCSRFToken,sanitize,rateLimit,getRemainingAttempts,recordFailedLogin,isLockedOut,getLockoutRemaining,clearFailedLogins,createSession,getSession,clearSession,requireAuth,requireAdmin,generateOTP,storeOTP,verifyOTP,validators,auditLog,getAuditLog,initTheme};})();
+</script>
+<script>
+/* THEME */
+const html=document.documentElement;
+const darkOpt=document.getElementById('darkOpt');
+const lightOpt=document.getElementById('lightOpt');
+function setTheme(t){
+  html.setAttribute('data-theme',t);
+  darkOpt.classList.toggle('active',t==='dark');
+  lightOpt.classList.toggle('active',t==='light');
+  localStorage.setItem('theme',t);
+}
+document.getElementById('themeToggle').addEventListener('click',()=>setTheme(html.getAttribute('data-theme')==='dark'?'light':'dark'));
+const saved=localStorage.getItem('theme');if(saved)setTheme(saved);
+
+/* PAYMENT TABS */
+function selectPayment(type,el){
+  document.querySelectorAll('.pay-method').forEach(m=>m.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('cardSection').style.display=type==='card'?'block':'none';
+  document.getElementById('upiSection').style.display=type==='upi'?'block':'none';
+  document.getElementById('codSection').style.display=type==='cod'?'block':'none';
+}
+
+/* UPI SELECT */
+function selectUPI(el){
+  document.querySelectorAll('.upi-app').forEach(a=>a.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+/* CARD FORMATTING */
+function formatCard(el){
+  let v=el.value.replace(/\D/g,'').slice(0,16);
+  el.value=v.replace(/(.{4})/g,'$1 ').trim();
+  const display=v.padEnd(16,'•').replace(/(.{4})/g,'$1 ').trim();
+  document.getElementById('cardNumDisplay').textContent=display;
+  // Detect brand
+  const brand=v[0]==='4'?'💙 VISA':v[0]==='5'?'🔴 MC':v.startsWith('6')?'🟠 RuPay':'💳';
+  document.getElementById('cardBrand').textContent=brand;
+}
+function updateHolder(el){
+  document.getElementById('cardHolderDisplay').textContent=el.value.toUpperCase()||'YOUR NAME';
+}
+function formatExpiry(el){
+  let v=el.value.replace(/\D/g,'').slice(0,4);
+  if(v.length>=2)v=v.slice(0,2)+' / '+v.slice(2);
+  el.value=v;
+  document.getElementById('cardExpDisplay').textContent=el.value||'MM/YY';
+}
+
+/* DELIVERY SELECTION */
+document.querySelectorAll('[name=delivery]').forEach(r=>{
+  r.closest('label').addEventListener('click',function(){
+    document.querySelectorAll('[name=delivery]').forEach(x=>x.closest('label').classList.remove('selected'));
+    this.classList.add('selected');
+  });
+});
+
+/* COUPON */
+let couponApplied=false;
+function applyCoupon(){
+  const v=document.getElementById('couponInput').value.trim().toUpperCase();
+  if(v==='SHIFT10'){
+    couponApplied=true;
+    document.getElementById('couponSuccess').style.display='block';
+    document.getElementById('discountRow').style.display='flex';
+    document.getElementById('gstVal').textContent='₹2,430';
+    document.getElementById('totalVal').textContent='₹16,196';
+    showToast('✓ Coupon applied! ₹1,500 off');
+  } else {
+    showToast('Invalid coupon code');
+    document.getElementById('couponInput').classList.add('error');
+    setTimeout(()=>document.getElementById('couponInput').classList.remove('error'),2000);
+  }
+}
+
+/* PLACE ORDER */
+function placeOrder(){
+  const btn=document.getElementById('placeBtn');
+  btn.classList.add('loading');
+  document.getElementById('step3').classList.add('active');
+  setTimeout(()=>{
+    btn.classList.remove('loading');
+    const n=Math.floor(4820+Math.random()*100);
+    document.getElementById('successOrderId').textContent=`Order #${n} · Estimated delivery: 3–5 days`;
+    document.getElementById('successScreen').classList.add('show');
+  },2400);
+}
+
+/* TOAST */
+let toastT;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2500);
+}
+</script>
+
+</body>
+</html>

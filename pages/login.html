@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>SHIFT — Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+[data-theme="dark"]{--bg:#0c0c0c;--bg2:#111;--surface:#161616;--card:#1a1a1a;--border:#252525;--border2:#333;--text:#f0ece6;--text2:#888;--text3:#444;--accent:#e8f55e;--accent-fg:#0c0c0c;--red:#f87171;--green:#4ade80;--input-bg:#111}
+[data-theme="light"]{--bg:#f7f6f3;--bg2:#edecea;--surface:#fff;--card:#fff;--border:#e2dfd8;--border2:#ccc;--text:#1a1a18;--text2:#6b6860;--text3:#bbb;--accent:#1a1a18;--accent-fg:#f7f6f3;--red:#dc2626;--green:#16a34a;--input-bg:#fafaf8}
+html,body{min-height:100%;height:100%}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);display:flex;align-items:center;justify-content:center;transition:background .3s,color .3s;padding:1rem}
+.page{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;width:100%;max-width:1100px;overflow:hidden;border-radius:24px;box-shadow:0 32px 80px rgba(0,0,0,.4)}
+@media(max-width:700px){.page{grid-template-columns:1fr}.page-left{display:none}}
+
+/* LEFT PANEL */
+.page-left{background:var(--accent);display:flex;flex-direction:column;justify-content:space-between;padding:3rem;position:relative;overflow:hidden}
+.pl-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 80%,rgba(0,0,0,.15),transparent 60%)}
+.pl-brand{font-size:1.6rem;font-weight:800;color:var(--accent-fg);display:flex;align-items:center;gap:.5rem;position:relative}
+.pl-brand-dot{width:10px;height:10px;border-radius:50%;background:var(--accent-fg);opacity:.5}
+.pl-content{position:relative}
+.pl-title{font-family:'Instrument Serif',serif;font-size:2.8rem;font-weight:400;color:var(--accent-fg);line-height:1.1;margin-bottom:1rem}
+.pl-sub{font-size:.85rem;color:rgba(0,0,0,.55);line-height:1.7;max-width:320px}
+.pl-features{display:flex;flex-direction:column;gap:.7rem;margin-top:2rem;position:relative}
+.pl-feat{display:flex;align-items:center;gap:.7rem;font-size:.78rem;color:rgba(0,0,0,.6)}
+.pl-feat-icon{width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.pl-bottom{font-size:.65rem;color:rgba(0,0,0,.4);font-family:'Geist Mono',monospace;position:relative}
+
+/* RIGHT PANEL */
+.page-right{background:var(--surface);display:flex;flex-direction:column;justify-content:center;padding:3rem;transition:background .3s}
+.pr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem}
+.pr-logo{font-size:1.1rem;font-weight:800;color:var(--text);display:flex;align-items:center;gap:.4rem}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.theme-toggle{display:flex;align-items:center;background:var(--bg2);border-radius:100px;padding:3px;border:1px solid var(--border);cursor:pointer}
+.toggle-opt{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;transition:background .2s;color:var(--text3)}
+.toggle-opt.active{background:var(--accent);color:var(--accent-fg)}
+
+/* TABS */
+.auth-tabs{display:flex;gap:0;margin-bottom:2rem;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.tab{flex:1;padding:.65rem;text-align:center;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--text2);transition:all .2s;border:none;background:none;font-family:'Syne',sans-serif}
+.tab.active{background:var(--accent);color:var(--accent-fg)}
+
+/* FORMS */
+.form-step{display:none;animation:fadeIn .3s ease}
+.form-step.visible{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.form-title{font-family:'Instrument Serif',serif;font-size:1.8rem;color:var(--text);margin-bottom:.4rem}
+.form-sub{font-size:.78rem;color:var(--text2);margin-bottom:1.8rem;line-height:1.6}
+
+.form-group{margin-bottom:1rem}
+.form-label{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text2);font-family:'Geist Mono',monospace;display:block;margin-bottom:.4rem}
+.form-input{width:100%;padding:.78rem 1rem;background:var(--input-bg);border:1.5px solid var(--border);color:var(--text);border-radius:10px;font-family:'Syne',sans-serif;font-size:.85rem;outline:none;transition:border-color .2s,box-shadow .2s}
+.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 12%,transparent)}
+.form-input.error{border-color:var(--red)!important}
+.form-input.success{border-color:var(--green)!important}
+.form-input::placeholder{color:var(--text3)}
+.form-error{font-size:.65rem;color:var(--red);margin-top:.3rem;font-family:'Geist Mono',monospace;display:none}
+.form-group.has-error .form-error{display:block}
+.form-group.has-error .form-input{border-color:var(--red)}
+
+/* PASSWORD FIELD */
+.pw-wrap{position:relative}
+.pw-toggle{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text2);font-size:.9rem;transition:color .2s}
+.pw-toggle:hover{color:var(--text)}
+
+/* PASSWORD STRENGTH */
+.pw-strength{margin-top:.5rem}
+.pw-bars{display:flex;gap:3px;margin-bottom:.3rem}
+.pw-bar{height:3px;flex:1;border-radius:100px;background:var(--border);transition:background .3s}
+.pw-label{font-size:.62rem;font-family:'Geist Mono',monospace;color:var(--text2)}
+
+/* CAPTCHA */
+.captcha-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.captcha-question{font-family:'Geist Mono',monospace;font-size:.85rem;color:var(--text);font-weight:500}
+.captcha-input{width:70px;padding:.45rem .7rem;background:var(--input-bg);border:1.5px solid var(--border);color:var(--text);border-radius:8px;font-family:'Geist Mono',monospace;font-size:.85rem;outline:none;text-align:center;transition:border-color .2s}
+.captcha-input:focus{border-color:var(--accent)}
+.captcha-refresh{background:none;border:none;cursor:pointer;color:var(--text2);font-size:1rem;transition:color .2s,transform .3s}
+.captcha-refresh:hover{color:var(--accent);transform:rotate(180deg)}
+
+/* OTP INPUT */
+.otp-inputs{display:flex;gap:.6rem;justify-content:center;margin:1.5rem 0}
+.otp-digit{width:48px;height:56px;text-align:center;font-family:'Geist Mono',monospace;font-size:1.3rem;font-weight:600;background:var(--input-bg);border:1.5px solid var(--border);color:var(--text);border-radius:10px;outline:none;transition:border-color .2s,box-shadow .2s}
+.otp-digit:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 12%,transparent)}
+.otp-digit.filled{border-color:var(--accent)}
+.otp-timer{text-align:center;font-size:.72rem;color:var(--text2);font-family:'Geist Mono',monospace;margin-bottom:.5rem}
+.otp-resend{background:none;border:none;cursor:pointer;color:var(--accent);font-size:.72rem;font-family:'Syne',sans-serif;font-weight:600;transition:opacity .2s}
+.otp-resend:disabled{opacity:.4;cursor:not-allowed}
+
+/* RATE LIMIT BAR */
+.attempts-bar{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.7rem 1rem;margin-bottom:1rem;display:none}
+.attempts-text{font-size:.68rem;color:var(--text2);font-family:'Geist Mono',monospace}
+.attempts-text span{color:var(--red);font-weight:600}
+
+/* LOCKOUT */
+.lockout-box{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);border-radius:10px;padding:1.2rem;margin-bottom:1rem;text-align:center;display:none}
+.lockout-icon{font-size:1.5rem;margin-bottom:.5rem}
+.lockout-title{font-size:.85rem;font-weight:700;color:var(--red);margin-bottom:.3rem}
+.lockout-timer{font-family:'Geist Mono',monospace;font-size:.8rem;color:var(--text2)}
+
+/* SUBMIT BTN */
+.btn-submit{width:100%;padding:.9rem;background:var(--accent);color:var(--accent-fg);border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;border-radius:10px;transition:all .25s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;margin-top:.5rem}
+.btn-submit:hover:not(:disabled){transform:scale(1.02);box-shadow:0 8px 28px color-mix(in srgb,var(--accent) 30%,transparent)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-text{transition:opacity .2s}
+.btn-spinner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
+.btn-submit.loading .btn-text{opacity:0}
+.btn-submit.loading .btn-spinner{opacity:1}
+.spinner{width:20px;height:20px;border:2px solid var(--accent-fg);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.divider{display:flex;align-items:center;gap:.8rem;margin:1.2rem 0;color:var(--text3);font-size:.7rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* SOCIAL LOGIN */
+.social-btns{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.social-btn{padding:.75rem;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text2);cursor:pointer;font-family:'Syne',sans-serif;font-size:.75rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:all .2s}
+.social-btn:hover{border-color:var(--accent);color:var(--text)}
+
+.auth-link{text-align:center;font-size:.75rem;color:var(--text2);margin-top:1.2rem}
+.auth-link a{color:var(--accent);text-decoration:none;font-weight:600}
+[data-theme="light"] .auth-link a{color:var(--text);text-decoration:underline}
+
+/* TOAST */
+#toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(60px);background:var(--text);color:var(--bg);padding:.75rem 1.5rem;border-radius:100px;font-size:.78rem;font-weight:600;z-index:9999;opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;white-space:nowrap}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+#toast.error-toast{background:var(--red);color:#fff}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <!-- LEFT -->
+  <div class="page-left">
+    <div class="pl-bg"></div>
+    <div class="pl-brand"><div class="pl-brand-dot"></div>SHIFT</div>
+    <div class="pl-content">
+      <h2 class="pl-title">Your store,<br/>your rules.</h2>
+      <p class="pl-sub">Sign in to access your account, track orders, and shop thousands of curated products.</p>
+      <div class="pl-features">
+        <div class="pl-feat"><div class="pl-feat-icon">🔒</div>OTP-verified secure login</div>
+        <div class="pl-feat"><div class="pl-feat-icon">⚡</div>Instant order tracking</div>
+        <div class="pl-feat"><div class="pl-feat-icon">💳</div>Saved payment methods</div>
+        <div class="pl-feat"><div class="pl-feat-icon">🎁</div>Exclusive member deals</div>
+      </div>
+    </div>
+    <div class="pl-bottom">256-bit SSL · PCI-DSS · ISO 27001</div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="page-right">
+    <div class="pr-top">
+      <a class="pr-logo" href="index.html"><span class="logo-dot"></span>SHIFT</a>
+      <div class="theme-toggle" id="themeToggle">
+        <div class="toggle-opt active" id="darkOpt">🌙</div>
+        <div class="toggle-opt" id="lightOpt">☀️</div>
+      </div>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="tab active" onclick="switchTab('login',this)">Sign In</button>
+      <button class="tab" onclick="switchTab('signup',this)">Create Account</button>
+    </div>
+
+    <!-- LOGIN FLOW -->
+    <div id="loginFlow">
+      <!-- Step 1: Credentials -->
+      <div class="form-step visible" id="loginStep1">
+        <div class="form-title">Welcome back</div>
+        <div class="form-sub">Enter your credentials to continue.</div>
+
+        <div class="lockout-box" id="lockoutBox">
+          <div class="lockout-icon">🔒</div>
+          <div class="lockout-title">Account Temporarily Locked</div>
+          <div class="lockout-timer">Try again in <span id="lockoutCountdown">--:--</span></div>
+        </div>
+
+        <div class="attempts-bar" id="attemptsBar">
+          <div class="attempts-text">⚠ <span id="attemptsLeft">3</span> attempts remaining before lockout</div>
+        </div>
+
+        <div class="form-group" id="emailGroup">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" type="email" id="loginEmail" placeholder="you@email.com" autocomplete="email"/>
+          <div class="form-error" id="emailError">Enter a valid email address</div>
+        </div>
+        <div class="form-group" id="pwGroup">
+          <label class="form-label">Password</label>
+          <div class="pw-wrap">
+            <input class="form-input" type="password" id="loginPw" placeholder="••••••••" autocomplete="current-password"/>
+            <button class="pw-toggle" onclick="togglePw('loginPw',this)" type="button">👁</button>
+          </div>
+          <div class="form-error" id="pwError">Password is required</div>
+        </div>
+
+        <div class="captcha-box" id="captchaBox">
+          <span class="captcha-question" id="captchaQ"></span>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <input class="captcha-input" type="text" id="captchaAns" placeholder="?" maxlength="3"/>
+            <button class="captcha-refresh" onclick="refreshCaptcha()" type="button">↻</button>
+          </div>
+        </div>
+        <div class="form-error" style="margin-top:-.5rem;margin-bottom:.8rem" id="captchaError">Incorrect answer</div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.75rem;color:var(--text2)">
+            <input type="checkbox" style="accent-color:var(--accent)"/> Remember me
+          </label>
+          <a href="#" style="font-size:.75rem;color:var(--accent);text-decoration:none;font-weight:600" onclick="showForgot()">Forgot password?</a>
+        </div>
+
+        <button class="btn-submit" id="loginBtn" onclick="submitLogin()">
+          <span class="btn-text">Sign In →</span>
+          <span class="btn-spinner"><span class="spinner"></span></span>
+        </button>
+
+        <div class="divider">or continue with</div>
+        <div class="social-btns">
+          <button class="social-btn" onclick="showToast('Google OAuth coming soon','info')">🔵 Google</button>
+          <button class="social-btn" onclick="showToast('Apple Sign-In coming soon','info')">⚫ Apple</button>
+        </div>
+      </div>
+
+      <!-- Step 2: OTP -->
+      <div class="form-step" id="loginStep2">
+        <div class="form-title">Verify it's you</div>
+        <div class="form-sub" id="otpSubText">We sent a 6-digit code to <strong id="otpEmailDisplay"></strong>. Expires in 5 minutes.</div>
+        <div class="otp-timer" id="otpTimer">Code expires in <span id="otpCountdown">05:00</span></div>
+        <div class="otp-inputs" id="otpInputs">
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+        </div>
+        <button class="btn-submit" id="otpBtn" onclick="verifyOTP()">
+          <span class="btn-text">Verify & Sign In →</span>
+          <span class="btn-spinner"><span class="spinner"></span></span>
+        </button>
+        <div style="text-align:center;margin-top:1rem">
+          <button class="otp-resend" id="resendBtn" onclick="resendOTP()" disabled>Resend code in <span id="resendTimer">30</span>s</button>
+        </div>
+        <div style="text-align:center;margin-top:.8rem">
+          <a href="#" style="font-size:.72rem;color:var(--text2);text-decoration:none" onclick="goBack('loginStep1','loginStep2')">← Back</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIGNUP FLOW -->
+    <div id="signupFlow" style="display:none">
+      <div class="form-step visible" id="signupStep1">
+        <div class="form-title">Create account</div>
+        <div class="form-sub">Join thousands of happy shoppers.</div>
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input class="form-input" type="text" id="signupName" placeholder="Arjun Mehta"/>
+          <div class="form-error">Name must be 2–80 characters</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" type="email" id="signupEmail" placeholder="arjun@email.com"/>
+          <div class="form-error">Enter a valid email</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="pw-wrap">
+            <input class="form-input" type="password" id="signupPw" placeholder="Min 8 chars, 1 upper, 1 number, 1 symbol" oninput="checkStrength(this.value)"/>
+            <button class="pw-toggle" onclick="togglePw('signupPw',this)" type="button">👁</button>
+          </div>
+          <div class="pw-strength">
+            <div class="pw-bars"><div class="pw-bar" id="pb1"></div><div class="pw-bar" id="pb2"></div><div class="pw-bar" id="pb3"></div><div class="pw-bar" id="pb4"></div></div>
+            <div class="pw-label" id="pwStrengthLabel">Enter a password</div>
+          </div>
+          <div class="form-error">Must be 8+ chars with uppercase, number & symbol</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone (for OTP)</label>
+          <input class="form-input" type="tel" id="signupPhone" placeholder="+91 98765 43210"/>
+          <div class="form-error">Enter a valid phone number</div>
+        </div>
+        <label style="display:flex;align-items:flex-start;gap:.6rem;cursor:pointer;font-size:.75rem;color:var(--text2);margin-bottom:1rem;line-height:1.5">
+          <input type="checkbox" id="termsCheck" style="accent-color:var(--accent);margin-top:2px"/>
+          I agree to the <a href="#" style="color:var(--accent);text-decoration:none">Terms of Service</a> and <a href="#" style="color:var(--accent);text-decoration:none">Privacy Policy</a>
+        </label>
+        <button class="btn-submit" onclick="submitSignup()">
+          <span class="btn-text">Create Account →</span>
+          <span class="btn-spinner"><span class="spinner"></span></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="auth-link" id="authSwitchText">Don't have an account? <a href="#" onclick="switchTab('signup',document.querySelectorAll('.tab')[1])">Sign up free</a></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const ShiftSecurity=(()=>{function generateCSRF(){const a=new Uint8Array(32);crypto.getRandomValues(a);return Array.from(a).map(b=>b.toString(16).padStart(2,"0")).join("")}function getCSRFToken(){let t=sessionStorage.getItem("csrf_token");if(!t){t=generateCSRF();sessionStorage.setItem("csrf_token",t)}return t}function injectCSRF(){document.querySelectorAll("form").forEach(f=>{if(!f.querySelector("[name=_csrf]")){const i=document.createElement("input");i.type="hidden";i.name="_csrf";i.value=getCSRFToken();f.appendChild(i)}})}function sanitize(s){if(typeof s!=="string")return"";return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#x27;").trim().slice(0,2000)}const _rl={};function rateLimit(k,max,win){const now=Date.now();if(!_rl[k])_rl[k]={count:0,start:now};const r=_rl[k];if(now-r.start>win){r.count=0;r.start=now}r.count++;return r.count<=max}function getRemainingAttempts(k,max){return Math.max(0,max-(_rl[k]?.count||0))}function recordFailedLogin(id){const k="fail_"+id;const d=JSON.parse(sessionStorage.getItem(k)||"{"count":0,"until":0}");d.count++;if(d.count>=5)d.until=Date.now()+15*60*1000;sessionStorage.setItem(k,JSON.stringify(d));return d}function isLockedOut(id){const d=JSON.parse(sessionStorage.getItem("fail_"+id)||"{"count":0,"until":0}");return d.until>Date.now()}function getLockoutRemaining(id){const d=JSON.parse(sessionStorage.getItem("fail_"+id)||"{"count":0,"until":0}");return Math.max(0,Math.ceil((d.until-Date.now())/1000))}function clearFailedLogins(id){sessionStorage.removeItem("fail_"+id)}const SK="shift_session",SD=30*60*1000;function createSession(u){const s={user:u,token:generateCSRF(),created:Date.now(),expires:Date.now()+SD,role:u.role||"customer"};sessionStorage.setItem(SK,JSON.stringify(s));return s}function getSession(){try{const s=JSON.parse(sessionStorage.getItem(SK));if(!s||Date.now()>s.expires){clearSession();return null}s.expires=Date.now()+SD;sessionStorage.setItem(SK,JSON.stringify(s));return s}catch{return null}}function clearSession(){sessionStorage.removeItem(SK)}function requireAuth(role){const s=getSession();if(!s){window.location.href="login.html";return false}if(role&&s.role!==role){window.location.href="index.html";return false}return s}function requireAdmin(){return requireAuth("admin")}function generateOTP(){return Math.floor(100000+Math.random()*900000).toString()}async function storeOTP(otp){const enc=new TextEncoder();const hash=await crypto.subtle.digest("SHA-256",enc.encode(otp+"shift_salt"));const hex=Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,"0")).join("");sessionStorage.setItem("pending_otp",JSON.stringify({hash:hex,exp:Date.now()+5*60*1000}));return otp}async function verifyOTP(input){const stored=JSON.parse(sessionStorage.getItem("pending_otp")||"null");if(!stored||Date.now()>stored.exp)return false;const enc=new TextEncoder();const hash=await crypto.subtle.digest("SHA-256",enc.encode(input+"shift_salt"));const hex=Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,"0")).join("");if(hex===stored.hash){sessionStorage.removeItem("pending_otp");return true}return false}const validators={email:v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),phone:v=>/^[\+]?[0-9]{10,13}$/.test(v.replace(/\s/g,"")),pin:v=>/^[0-9]{6}$/.test(v),name:v=>v.trim().length>=2&&v.trim().length<=80,password:v=>v.length>=8&&/[A-Z]/.test(v)&&/[0-9]/.test(v)&&/[^A-Za-z0-9]/.test(v),cardNum:v=>{const n=v.replace(/\s/g,"");if(!/^\d{13,19}$/.test(n))return false;let s=0,alt=false;for(let i=n.length-1;i>=0;i--){let d=+n[i];if(alt){d*=2;if(d>9)d-=9}s+=d;alt=!alt}return s%10===0},cvv:v=>/^\d{3,4}$/.test(v),expiry:v=>{const m=v.replace(/\s/g,"").match(/^(\d{2})[\/\-](\d{2,4})$/);if(!m)return false;const mo=parseInt(m[1]),yr=parseInt(m[2].length===2?"20"+m[2]:m[2]),now=new Date();return mo>=1&&mo<=12&&(yr>now.getFullYear()||(yr===now.getFullYear()&&mo>=now.getMonth()+1))}};const _log=JSON.parse(sessionStorage.getItem("audit_log")||"[]");function auditLog(action,details={}){_log.push({action,details,time:new Date().toISOString(),page:location.pathname});if(_log.length>200)_log.shift();sessionStorage.setItem("audit_log",JSON.stringify(_log))}function getAuditLog(){return[..._log]}function initTheme(dId="darkOpt",lId="lightOpt",tId="themeToggle"){const html=document.documentElement;const dOpt=document.getElementById(dId);const lOpt=document.getElementById(lId);function setTheme(t){html.setAttribute("data-theme",t);if(dOpt)dOpt.classList.toggle("active",t==="dark");if(lOpt)lOpt.classList.toggle("active",t==="light");localStorage.setItem("shift_theme",t)}const saved=localStorage.getItem("shift_theme");if(saved)setTheme(saved);document.getElementById(tId)?.addEventListener("click",()=>setTheme(html.getAttribute("data-theme")==="dark"?"light":"dark"));return setTheme}document.addEventListener("DOMContentLoaded",injectCSRF);return{getCSRFToken,sanitize,rateLimit,getRemainingAttempts,recordFailedLogin,isLockedOut,getLockoutRemaining,clearFailedLogins,createSession,getSession,clearSession,requireAuth,requireAdmin,generateOTP,storeOTP,verifyOTP,validators,auditLog,getAuditLog,initTheme};})();
+</script>
+<script>
+ShiftSecurity.initTheme();
+
+/* ── CAPTCHA ── */
+let captchaAnswer = 0;
+function refreshCaptcha() {
+  const a = Math.floor(Math.random()*20)+1, b = Math.floor(Math.random()*20)+1;
+  const ops = ['+','-','×'];
+  const op = ops[Math.floor(Math.random()*ops.length)];
+  captchaAnswer = op==='+'?a+b:op==='-'?a-b:a*b;
+  document.getElementById('captchaQ').textContent = `${a} ${op} ${b} = ?`;
+  document.getElementById('captchaAns').value='';
+  document.getElementById('captchaError').style.display='none';
+}
+refreshCaptcha();
+
+/* ── TABS ── */
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('loginFlow').style.display = tab==='login'?'block':'none';
+  document.getElementById('signupFlow').style.display = tab==='signup'?'block':'none';
+  document.getElementById('authSwitchText').innerHTML = tab==='login'
+    ? `Don't have an account? <a href="#" onclick="switchTab('signup',document.querySelectorAll('.tab')[1])">Sign up free</a>`
+    : `Already have an account? <a href="#" onclick="switchTab('login',document.querySelectorAll('.tab')[0])">Sign in</a>`;
+}
+
+/* ── PW TOGGLE ── */
+function togglePw(id, btn) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type==='password'?'text':'password';
+  btn.textContent = inp.type==='password'?'👁':'🙈';
+}
+
+/* ── PW STRENGTH ── */
+function checkStrength(v) {
+  let score = 0;
+  if(v.length>=8)score++; if(/[A-Z]/.test(v))score++; if(/[0-9]/.test(v))score++; if(/[^A-Za-z0-9]/.test(v))score++;
+  const colors = ['','var(--red)','var(--orange)','#facc15','var(--green)'];
+  const labels = ['','Weak','Fair','Good','Strong'];
+  for(let i=1;i<=4;i++){document.getElementById('pb'+i).style.background=i<=score?colors[score]:'var(--border)'}
+  document.getElementById('pwStrengthLabel').textContent=labels[score]||'Enter a password';
+  document.getElementById('pwStrengthLabel').style.color=colors[score]||'var(--text2)';
+}
+
+/* ── LOCKOUT CHECK ── */
+function checkLockout(email) {
+  if (ShiftSecurity.isLockedOut(email)) {
+    document.getElementById('lockoutBox').style.display='block';
+    document.getElementById('loginBtn').disabled=true;
+    startLockoutTimer(email);
+    return true;
+  }
+  return false;
+}
+function startLockoutTimer(email) {
+  const el = document.getElementById('lockoutCountdown');
+  const iv = setInterval(()=>{
+    const rem = ShiftSecurity.getLockoutRemaining(email);
+    if(rem<=0){clearInterval(iv);document.getElementById('lockoutBox').style.display='none';document.getElementById('loginBtn').disabled=false;return;}
+    const m=Math.floor(rem/60),s=rem%60;
+    el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  },1000);
+}
+
+/* ── LOGIN SUBMIT ── */
+async function submitLogin() {
+  const email = ShiftSecurity.sanitize(document.getElementById('loginEmail').value);
+  const pw = document.getElementById('loginPw').value;
+  const captcha = document.getElementById('captchaAns').value.trim();
+
+  // Rate limit
+  if (!ShiftSecurity.rateLimit('login', 10, 60000)) {
+    showToast('Too many requests. Wait a moment.','error'); return;
+  }
+
+  // Lockout
+  if (checkLockout(email)) return;
+
+  // Validate captcha
+  if (parseInt(captcha) !== captchaAnswer) {
+    document.getElementById('captchaError').style.display='block';
+    refreshCaptcha(); showToast('Incorrect CAPTCHA','error'); return;
+  }
+  document.getElementById('captchaError').style.display='none';
+
+  // Validate fields
+  if (!ShiftSecurity.validators.email(email)) {
+    document.getElementById('emailGroup').classList.add('has-error'); return;
+  }
+  document.getElementById('emailGroup').classList.remove('has-error');
+  if (!pw) {
+    document.getElementById('pwGroup').classList.add('has-error'); return;
+  }
+  document.getElementById('pwGroup').classList.remove('has-error');
+
+  // Simulate auth — REPLACE with real API call
+  const btn = document.getElementById('loginBtn');
+  btn.classList.add('loading'); btn.disabled=true;
+
+  await new Promise(r=>setTimeout(r,1200));
+
+  // Demo: accept admin@shift.com / Admin@123
+  const validUser = (email==='admin@shift.com' && pw==='Admin@123');
+  const validCustomer = (email==='user@shift.com' && pw==='User@123!');
+
+  if (validUser || validCustomer) {
+    ShiftSecurity.clearFailedLogins(email);
+    // Send OTP
+    const otp = await ShiftSecurity.storeOTP(ShiftSecurity.generateOTP ? ShiftSecurity.generateOTP() : '123456');
+    document.getElementById('otpEmailDisplay').textContent=email;
+    // In production: server sends OTP email. For demo, show in toast:
+    showToast(`[DEMO] OTP: ${otp}`, 'info');
+    ShiftSecurity.auditLog('login_otp_sent',{email});
+    btn.classList.remove('loading'); btn.disabled=false;
+    showStep('loginStep1','loginStep2');
+    startOTPTimer();
+  } else {
+    const failData = ShiftSecurity.recordFailedLogin(email);
+    btn.classList.remove('loading'); btn.disabled=false;
+    refreshCaptcha();
+    const rem = 5 - failData.count;
+    if (rem <= 0) {
+      checkLockout(email);
+    } else {
+      document.getElementById('attemptsBar').style.display='block';
+      document.getElementById('attemptsLeft').textContent=rem;
+      showToast(`Invalid credentials. ${rem} attempt${rem!==1?'s':''} left.`,'error');
+    }
+    ShiftSecurity.auditLog('login_failed',{email});
+  }
+}
+
+/* ── OTP VERIFY ── */
+async function verifyOTP() {
+  const digits = [...document.querySelectorAll('.otp-digit')].map(i=>i.value).join('');
+  if (digits.length !== 6) { showToast('Enter all 6 digits','error'); return; }
+
+  const btn = document.getElementById('otpBtn');
+  btn.classList.add('loading'); btn.disabled=true;
+
+  await new Promise(r=>setTimeout(r,900));
+  const valid = await ShiftSecurity.verifyOTP(digits);
+
+  if (valid) {
+    const email = document.getElementById('loginEmail').value;
+    const isAdmin = email==='admin@shift.com';
+    ShiftSecurity.createSession({ email, name: isAdmin?'Admin User':'Customer', role: isAdmin?'admin':'customer' });
+    ShiftSecurity.auditLog('login_success',{email});
+    showToast('✓ Signed in successfully!','success');
+    setTimeout(()=>{ window.location.href = isAdmin?'admin.html':'index.html'; },900);
+  } else {
+    btn.classList.remove('loading'); btn.disabled=false;
+    showToast('Invalid or expired OTP','error');
+    document.querySelectorAll('.otp-digit').forEach(d=>{d.value='';d.classList.remove('filled')});
+    document.querySelector('.otp-digit').focus();
+  }
+}
+
+/* ── SIGNUP ── */
+async function submitSignup() {
+  const name = ShiftSecurity.sanitize(document.getElementById('signupName').value);
+  const email = ShiftSecurity.sanitize(document.getElementById('signupEmail').value);
+  const pw = document.getElementById('signupPw').value;
+  const phone = ShiftSecurity.sanitize(document.getElementById('signupPhone').value);
+  const terms = document.getElementById('termsCheck').checked;
+
+  if (!ShiftSecurity.validators.name(name)) { showToast('Enter a valid name','error'); return; }
+  if (!ShiftSecurity.validators.email(email)) { showToast('Enter a valid email','error'); return; }
+  if (!ShiftSecurity.validators.password(pw)) { showToast('Password too weak','error'); return; }
+  if (!terms) { showToast('Please accept Terms of Service','error'); return; }
+
+  showToast('✓ Account created! Redirecting...','success');
+  ShiftSecurity.auditLog('signup',{email,name});
+  setTimeout(()=>switchTab('login',document.querySelectorAll('.tab')[0]),1500);
+}
+
+/* ── OTP TIMER ── */
+let otpTimerInterval;
+function startOTPTimer() {
+  let secs=300;
+  clearInterval(otpTimerInterval);
+  otpTimerInterval=setInterval(()=>{
+    secs--;
+    const m=Math.floor(secs/60),s=secs%60;
+    document.getElementById('otpCountdown').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if(secs<=0){clearInterval(otpTimerInterval);document.getElementById('otpCountdown').textContent='Expired';}
+  },1000);
+  let resendSecs=30;
+  const resendIv=setInterval(()=>{
+    resendSecs--;
+    document.getElementById('resendTimer').textContent=resendSecs;
+    if(resendSecs<=0){clearInterval(resendIv);const rb=document.getElementById('resendBtn');rb.disabled=false;rb.textContent='Resend OTP';}
+  },1000);
+}
+async function resendOTP() {
+  const otp = await ShiftSecurity.storeOTP(ShiftSecurity.generateOTP());
+  showToast(`[DEMO] New OTP: ${otp}`,'info');
+  startOTPTimer();
+  document.getElementById('resendBtn').disabled=true;
+  document.getElementById('resendBtn').textContent='Resend code in 30s';
+}
+
+/* ── OTP INPUT FLOW ── */
+document.querySelectorAll('.otp-digit').forEach((inp,i,all)=>{
+  inp.addEventListener('input',()=>{
+    inp.classList.toggle('filled',inp.value.length>0);
+    if(inp.value&&i<all.length-1)all[i+1].focus();
+  });
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='Backspace'&&!inp.value&&i>0)all[i-1].focus();
+  });
+  inp.addEventListener('paste',e=>{
+    const paste=e.clipboardData.getData('text').replace(/\D/g,'').slice(0,6);
+    all.forEach((d,j)=>{d.value=paste[j]||'';d.classList.toggle('filled',!!d.value)});
+    e.preventDefault();
+  });
+});
+
+/* ── HELPERS ── */
+function showStep(from,to) {
+  document.getElementById(from).classList.remove('visible');
+  document.getElementById(to).classList.add('visible');
+}
+function goBack(to,from){
+  document.getElementById(from).classList.remove('visible');
+  document.getElementById(to).classList.add('visible');
+}
+function showForgot(){ showToast('Password reset link sent to your email','info'); }
+
+let toastT;
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=''; t.classList.add('show');
+  if(type==='error')t.classList.add('error-toast');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),3000);
+}
+</script>
+</body>
+</html>
