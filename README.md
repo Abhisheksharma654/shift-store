@@ -55,18 +55,6 @@ All pages link to each other. Start from `index.html`.
 
 ---
 
-## 🔐 Demo Login Credentials
-
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | `admin@shift.com` | `Admin@123` |
-| Customer | `user@shift.com` | `User@123!` |
-
-> After login, a demo OTP will be shown in a toast notification (bottom of screen).  
-> In production, this OTP must be sent by your backend via SMS/email — never generated client-side.
-
----
-
 ## 🔒 Security Features (Client-Side)
 
 | Feature | Details |
